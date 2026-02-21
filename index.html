@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Application EU AI Act - Inventaire et conformité scoring crédit high-risk. Outil RegTech pour banques.">
-    <title>Scoring Crédit High-Risk | Conformité EU AI Act</title>
+    <meta name="description" content="Application EU AI Act - Inventaire et conformité scoring crédit high-risk. Outil RegTech pour banques et institutions financières.">
+    <title>EU AI Act Compliance | Inventaire High-Risk Homieux Media</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -20,6 +20,7 @@
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
+            --light-bg: #f8f9fa;
         }
         
         * {
@@ -33,7 +34,7 @@
             background: var(--background);
             color: var(--text);
             line-height: 1.6;
-            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
         }
         
         .container {
@@ -43,9 +44,12 @@
         }
         
         header {
-            padding: 20px 0;
+            padding: 24px 0;
             border-bottom: 1px solid var(--border);
             background: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
         
         .header-content {
@@ -56,6 +60,7 @@
         
         .logo {
             height: 40px;
+            width: auto;
         }
         
         .discovery-btn {
@@ -67,59 +72,69 @@
             font-weight: 600;
             font-size: 13px;
             transition: all 0.2s;
+            border: none;
+            cursor: pointer;
         }
         
         .discovery-btn:hover {
             background: var(--accent);
+            transform: translateY(-1px);
         }
         
         main {
             padding: 40px 0;
+            min-height: calc(100vh - 200px);
         }
         
-        /* Progress Bar */
-        .progress-container {
-            margin-bottom: 40px;
-        }
-        
-        .progress-header {
+        .progress-indicator {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 40px;
+            gap: 8px;
         }
         
         .progress-step {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--primary);
-        }
-        
-        .progress-label {
-            font-size: 13px;
-            color: var(--text-light);
-        }
-        
-        .progress-bar {
-            height: 8px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
             background: var(--border);
-            border-radius: 4px;
-            overflow: hidden;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.3s;
         }
         
-        .progress-fill {
-            height: 100%;
+        .progress-step.active {
             background: var(--primary);
-            transition: width 0.4s ease;
+            color: white;
         }
         
-        /* Tunnel Steps */
-        .step {
+        .progress-step.completed {
+            background: var(--success);
+            color: white;
+        }
+        
+        .progress-line {
+            width: 40px;
+            height: 2px;
+            background: var(--border);
+            transition: all 0.3s;
+        }
+        
+        .progress-line.completed {
+            background: var(--success);
+        }
+        
+        .step-container {
             display: none;
-            animation: fadeIn 0.3s ease;
+            animation: fadeIn 0.4s ease-out;
         }
         
-        .step.active {
+        .step-container.active {
             display: block;
         }
         
@@ -133,41 +148,45 @@
             margin-bottom: 32px;
         }
         
-        .step-number {
-            display: inline-block;
-            width: 48px;
-            height: 48px;
-            background: var(--primary);
-            color: white;
-            border-radius: 50%;
-            font-size: 20px;
-            font-weight: 700;
-            line-height: 48px;
-            margin-bottom: 16px;
-        }
-        
-        h1 {
+        .step-header h1 {
             font-size: 28px;
             font-weight: 700;
             color: var(--primary);
             margin-bottom: 8px;
         }
         
-        .step-description {
+        .step-header p {
             color: var(--text-light);
             font-size: 16px;
         }
         
-        .panel {
+        .step-number {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .form-card {
             background: white;
             border: 1px solid var(--border);
             border-radius: 12px;
             padding: 32px;
-            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
         }
         
         .form-group {
             margin-bottom: 24px;
+        }
+        
+        .form-group:last-child {
+            margin-bottom: 0;
         }
         
         label {
@@ -191,11 +210,12 @@
         textarea {
             width: 100%;
             padding: 14px;
-            border: 2px solid var(--border);
+            border: 1.5px solid var(--border);
             border-radius: 8px;
             font-family: 'Epilogue', sans-serif;
             font-size: 15px;
             transition: all 0.2s;
+            background: white;
         }
         
         input:focus,
@@ -203,17 +223,13 @@
         textarea:focus {
             outline: none;
             border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 8, 135, 0.05);
         }
         
         input.error,
-        select.error {
+        select.error,
+        textarea.error {
             border-color: var(--danger);
-            background: #fef2f2;
-        }
-        
-        textarea {
-            min-height: 100px;
-            resize: vertical;
         }
         
         .error-message {
@@ -227,53 +243,24 @@
             display: block;
         }
         
-        /* Options Grid */
-        .options-grid {
-            display: grid;
-            gap: 12px;
+        textarea {
+            min-height: 100px;
+            resize: vertical;
         }
         
-        .option-card {
-            padding: 16px;
-            border: 2px solid var(--border);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .option-card:hover {
-            border-color: var(--primary);
-        }
-        
-        .option-card.selected {
-            border-color: var(--primary);
-            background: rgba(0, 8, 135, 0.03);
-        }
-        
-        .option-title {
-            font-weight: 600;
-            font-size: 15px;
-            margin-bottom: 4px;
-        }
-        
-        .option-desc {
-            font-size: 13px;
-            color: var(--text-light);
-        }
-        
-        /* Checkbox Group */
         .checkbox-group {
             display: flex;
             flex-direction: column;
             gap: 12px;
+            margin-top: 12px;
         }
         
         .checkbox-item {
             display: flex;
             align-items: flex-start;
             gap: 12px;
-            padding: 16px;
-            border: 2px solid var(--border);
+            padding: 12px;
+            border: 1.5px solid var(--border);
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s;
@@ -281,41 +268,30 @@
         
         .checkbox-item:hover {
             border-color: var(--primary);
-        }
-        
-        .checkbox-item.checked {
-            border-color: var(--primary);
-            background: rgba(0, 8, 135, 0.03);
+            background: rgba(0, 8, 135, 0.02);
         }
         
         .checkbox-item input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            accent-color: var(--primary);
             margin-top: 2px;
-            flex-shrink: 0;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+            cursor: pointer;
         }
         
-        .checkbox-content {
-            flex: 1;
-        }
-        
-        .checkbox-title {
-            font-weight: 600;
+        .checkbox-item label {
+            font-weight: 400;
             font-size: 14px;
-            margin-bottom: 4px;
+            margin: 0;
+            cursor: pointer;
+            flex: 1;
+            line-height: 1.5;
         }
         
-        .checkbox-desc {
-            font-size: 13px;
-            color: var(--text-light);
-        }
-        
-        /* Buttons */
-        .btn-group {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
+        .checkbox-item strong {
+            color: var(--primary);
+            display: block;
+            margin-bottom: 2px;
         }
         
         .btn {
@@ -331,7 +307,7 @@
             cursor: pointer;
             border: none;
             transition: all 0.2s;
-            min-width: 140px;
+            width: 100%;
         }
         
         .btn-primary {
@@ -341,6 +317,8 @@
         
         .btn-primary:hover:not(:disabled) {
             background: var(--accent);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 8, 135, 0.15);
         }
         
         .btn-primary:disabled {
@@ -351,7 +329,7 @@
         .btn-secondary {
             background: white;
             color: var(--primary);
-            border: 2px solid var(--primary);
+            border: 1.5px solid var(--primary);
         }
         
         .btn-secondary:hover {
@@ -366,68 +344,61 @@
         
         .btn-success:hover {
             opacity: 0.9;
+            transform: translateY(-1px);
         }
         
-        /* Summary Cards */
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 32px;
+        }
+        
+        .btn-group .btn {
+            flex: 1;
+        }
+        
         .summary-card {
-            background: rgba(0, 8, 135, 0.03);
+            background: var(--light-bg);
             border-radius: 12px;
             padding: 24px;
             margin-bottom: 24px;
         }
         
         .summary-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-light);
+            font-size: 12px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 16px;
-        }
-        
-        .summary-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        .summary-item:last-child {
-            border-bottom: none;
-        }
-        
-        .summary-label {
-            font-size: 14px;
             color: var(--text-light);
+            margin-bottom: 8px;
+            font-weight: 600;
         }
         
         .summary-value {
-            font-size: 14px;
+            font-size: 18px;
             font-weight: 600;
+            color: var(--primary);
         }
         
-        .summary-value.high-risk {
-            color: var(--danger);
-        }
-        
-        .summary-value.compliant {
-            color: var(--success);
-        }
-        
-        /* Stats Grid */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 16px;
-            margin-bottom: 32px;
+            margin: 32px 0;
         }
         
         .stat-card {
             text-align: center;
             padding: 24px;
             background: white;
-            border: 1px solid var(--border);
+            border: 1.5px solid var(--border);
             border-radius: 12px;
+            transition: all 0.2s;
+        }
+        
+        .stat-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
         
         .stat-number {
@@ -437,23 +408,40 @@
             margin-bottom: 4px;
         }
         
-        .stat-number.danger {
-            color: var(--danger);
-        }
-        
-        .stat-number.success {
-            color: var(--success);
-        }
-        
         .stat-label {
             font-size: 13px;
             color: var(--text-light);
+            font-weight: 500;
         }
         
-        /* Model List Summary */
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .badge-high-risk {
+            background: #fee2e2;
+            color: var(--danger);
+        }
+        
+        .badge-compliant {
+            background: #d1fae5;
+            color: var(--success);
+        }
+        
+        .badge-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
         .model-summary {
             background: white;
-            border: 1px solid var(--border);
+            border: 1.5px solid var(--border);
             border-radius: 8px;
             padding: 16px;
             margin-bottom: 12px;
@@ -471,73 +459,107 @@
             color: var(--primary);
         }
         
-        .model-summary-status {
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-        
         .model-summary-meta {
             font-size: 13px;
             color: var(--text-light);
         }
         
-        /* Action Cards */
-        .action-cards {
+        .checklist-container {
+            background: white;
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 24px;
+        }
+        
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .checklist-item:last-child {
+            border-bottom: none;
+        }
+        
+        .checklist-checkbox {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary);
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+        
+        .checklist-content h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+        
+        .checklist-content p {
+            font-size: 13px;
+            color: var(--text-light);
+            line-height: 1.5;
+        }
+        
+        .alert {
+            background: #fef3c7;
+            border-left: 4px solid var(--warning);
+            color: #92400e;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+        
+        .alert strong {
+            color: #78350f;
+            display: block;
+            margin-bottom: 4px;
+        }
+        
+        .success-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--success);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin: 0 auto 24px;
+        }
+        
+        .final-actions {
             display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 16px;
             margin-top: 32px;
         }
         
-        .action-card {
-            padding: 24px;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
+        @media (max-width: 640px) {
+            .final-actions {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
         }
         
-        .action-card:hover {
-            border-color: var(--primary);
-            background: rgba(0, 8, 135, 0.03);
-        }
-        
-        .action-icon {
-            font-size: 32px;
-            margin-bottom: 12px;
-        }
-        
-        .action-title {
-            font-weight: 600;
-            font-size: 16px;
-            margin-bottom: 4px;
-        }
-        
-        .action-desc {
-            font-size: 13px;
-            color: var(--text-light);
-        }
-        
-        /* Success Message */
-        .success-message {
-            background: #d1fae5;
-            border: 1px solid var(--success);
-            color: #065f46;
-            padding: 16px;
-            border-radius: 8px;
-            margin-bottom: 24px;
-            text-align: center;
-        }
-        
-        /* Footer */
         footer {
             background: var(--primary);
             color: white;
-            padding: 40px 0 20px;
-            margin-top: 60px;
+            padding: 48px 0 24px;
+            margin-top: 80px;
         }
         
         .footer-content {
@@ -545,24 +567,24 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 20px;
-            margin-bottom: 24px;
+            gap: 24px;
+            margin-bottom: 32px;
         }
         
         .footer-logo {
-            height: 36px;
+            height: 40px;
             opacity: 0.9;
         }
         
         .footer-links {
             display: flex;
-            gap: 24px;
+            gap: 32px;
         }
         
         .footer-links a {
             color: rgba(255,255,255,0.8);
             text-decoration: none;
-            font-size: 13px;
+            font-size: 14px;
             transition: color 0.2s;
         }
         
@@ -572,24 +594,27 @@
         
         .footer-bottom {
             border-top: 1px solid rgba(255,255,255,0.1);
-            padding-top: 20px;
+            padding-top: 24px;
             text-align: center;
             color: rgba(255,255,255,0.6);
-            font-size: 13px;
+            font-size: 14px;
         }
         
-        @media (max-width: 768px) {
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .btn-group {
-                flex-direction: column;
-            }
-            
-            .btn {
-                width: 100%;
-            }
+        .hidden {
+            display: none !important;
+        }
+        
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -598,10 +623,11 @@
         <div class="container">
             <div class="header-content">
                 <a href="https://homieuxmedia.com" target="_blank" rel="noopener">
-                    <img src="logo-homieux.png" alt="Logo Homieux Media" class="logo" onerror="this.src='https://via.placeholder.com/150x40/000887/FFFFFF?text=HOMIEUX'">
+                    <!-- LOGO DANS LE MEME REPOSITORY -->
+                    <img src="logo-homieux.png" alt="Homieux Media Logo" class="logo">
                 </a>
                 <a href="https://cal.com/homieux-media/discovery-call-gratuit-discutons-de-vos-defis" target="_blank" rel="noopener" class="discovery-btn">
-                    Appel Découverte
+                    Appel Découverte 15 min
                 </a>
             </div>
         </div>
@@ -609,258 +635,258 @@
 
     <main>
         <div class="container">
-            <!-- Progress Bar -->
-            <div class="progress-container">
-                <div class="progress-header">
-                    <span class="progress-step">Étape <span id="currentStepNum">1</span> sur 7</span>
-                    <span class="progress-label" id="progressPercent">14%</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressBar" style="width: 14%"></div>
-                </div>
+            <!-- Indicateur de progression -->
+            <div class="progress-indicator" id="progressIndicator">
+                <div class="progress-step active" data-step="1">1</div>
+                <div class="progress-line"></div>
+                <div class="progress-step" data-step="2">2</div>
+                <div class="progress-line"></div>
+                <div class="progress-step" data-step="3">3</div>
+                <div class="progress-line"></div>
+                <div class="progress-step" data-step="4">4</div>
+                <div class="progress-line"></div>
+                <div class="progress-step" data-step="5">5</div>
+                <div class="progress-line"></div>
+                <div class="progress-step" data-step="6">6</div>
+                <div class="progress-line"></div>
+                <div class="progress-step" data-step="7">7</div>
             </div>
 
-            <!-- ÉTAPE 1 : Informations utilisateur -->
-            <div class="step active" id="step1">
+            <!-- Étape 1 : Informations entreprise -->
+            <div class="step-container active" id="step1">
                 <div class="step-header">
-                    <div class="step-number">1</div>
-                    <h1>Vos informations</h1>
-                    <p class="step-description">Commençons par quelques informations pour personnaliser votre rapport.</p>
+                    <span class="step-number">Étape 1 sur 7</span>
+                    <h1>Votre entreprise</h1>
+                    <p>Commençons par identifier votre organisation pour personnaliser votre rapport de conformité.</p>
                 </div>
                 
-                <div class="panel">
+                <div class="form-card">
                     <div class="form-group">
-                        <label for="companyName">Nom de votre entreprise *</label>
-                        <input type="text" id="companyName" placeholder="Ex : Banque Nationale de Belgique">
-                        <div class="error-message" id="error-companyName">Veuillez saisir le nom de votre entreprise.</div>
+                        <label for="companyName">Nom de l'entreprise *</label>
+                        <input type="text" id="companyName" placeholder="Ex : Banque Centrale Européenne" required>
+                        <div class="error-message">Veuillez saisir le nom de votre entreprise</div>
                     </div>
                     
                     <div class="form-group">
-                        <label for="userTitle">Votre poste actuel *</label>
-                        <input type="text" id="userTitle" placeholder="Ex : Chief Risk Officer, Compliance Manager...">
-                        <div class="error-message" id="error-userTitle">Veuillez saisir votre poste.</div>
+                        <label for="userPosition">Votre poste actuel *</label>
+                        <input type="text" id="userPosition" placeholder="Ex : Directeur de la Conformité, Chief Risk Officer" required>
+                        <div class="error-message">Veuillez saisir votre poste actuel</div>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="userEmail">Votre email professionnel *</label>
-                        <input type="text" id="userEmail" placeholder="exemple@banque.com">
-                        <div class="error-message" id="error-userEmail">Veuillez saisir une adresse email valide.</div>
-                    </div>
-                </div>
-                
-                <div class="btn-group">
-                    <button class="btn btn-primary" onclick="validateAndNext(1)">
-                        Commencer l'inventaire →
+                    <button class="btn btn-primary" onclick="nextStep(1)">
+                        Continuer →
                     </button>
                 </div>
             </div>
 
-            <!-- ÉTAPE 2 : Nom et type du modèle -->
-            <div class="step" id="step2">
+            <!-- Étape 2 : Ajouter un modèle -->
+            <div class="step-container" id="step2">
                 <div class="step-header">
-                    <div class="step-number">2</div>
-                    <h1>Nom et technologie</h1>
-                    <p class="step-description">Identifions votre premier modèle de scoring.</p>
+                    <span class="step-number">Étape 2 sur 7</span>
+                    <h1>Ajouter un modèle d'IA</h1>
+                    <p>Identifiez un système d'IA utilisé pour le scoring ou l'évaluation du crédit.</p>
                 </div>
                 
-                <div class="panel">
+                <div class="form-card">
                     <div class="form-group">
                         <label for="modelName">Nom du modèle ou du système *</label>
-                        <input type="text" id="modelName" placeholder="Ex : Scoring Consommation V3">
-                        <div class="label-hint">Utilisez le nom interne de votre système pour faciliter l'identification.</div>
-                        <div class="error-message" id="error-modelName">Veuillez saisir un nom pour ce modèle.</div>
+                        <input type="text" id="modelName" placeholder="Ex : Scoring Consommation V3, Moteur de décision crédit immobilier" required>
+                        <div class="error-message">Veuillez saisir un nom pour ce modèle</div>
                     </div>
                     
                     <div class="form-group">
-                        <label>Type de technologie utilisée *</label>
-                        <div class="options-grid" id="modelTypeOptions">
-                            <div class="option-card" onclick="selectOption('modelType', 'ml', 'Machine Learning (ML)')">
-                                <div class="option-title">Machine Learning (ML)</div>
-                                <div class="option-desc">Algorithmes d'apprentissage automatique classiques</div>
-                            </div>
-                            <div class="option-card" onclick="selectOption('modelType', 'dl', 'Deep Learning / Neural Networks')">
-                                <div class="option-title">Deep Learning / Réseaux de neurones</div>
-                                <div class="option-desc">Réseaux de neurones profonds, plus complexes</div>
-                            </div>
-                            <div class="option-card" onclick="selectOption('modelType', 'rules', 'Règles métier automatisées')">
-                                <div class="option-title">Règles métier automatisées</div>
-                                <div class="option-desc">Système basé sur des règles prédéfinies sans apprentissage</div>
-                            </div>
-                            <div class="option-card" onclick="selectOption('modelType', 'hybrid', 'Système hybride')">
-                                <div class="option-title">Système hybride</div>
-                                <div class="option-desc">Combinaison de règles et de machine learning</div>
-                            </div>
-                            <div class="option-card" onclick="selectOption('modelType', 'genai', 'IA Générative (LLM)')">
-                                <div class="option-title">IA Générative (LLM)</div>
-                                <div class="option-desc">Grand modèle de langage, GPT, etc.</div>
-                            </div>
-                        </div>
-                        <input type="hidden" id="modelType">
-                        <div class="error-message" id="error-modelType">Veuillez sélectionner un type de technologie.</div>
+                        <label for="modelType">Type de technologie *</label>
+                        <select id="modelType" required>
+                            <option value="">Sélectionner le type...</option>
+                            <option value="ml">Machine Learning (ML) supervisé</option>
+                            <option value="dl">Deep Learning / Réseaux de neurones</option>
+                            <option value="rules">Système basé sur des règles métier</option>
+                            <option value="hybrid">Système hybride (règles + ML)</option>
+                            <option value="genai">IA Générative (LLM) pour l'analyse de documents</option>
+                        </select>
+                        <div class="error-message">Veuillez sélectionner un type de technologie</div>
                     </div>
-                </div>
-                
-                <div class="btn-group">
-                    <button class="btn btn-secondary" onclick="prevStep(2)">← Retour</button>
-                    <button class="btn btn-primary" onclick="validateAndNext(2)">Continuer →</button>
+                    
+                    <div class="btn-group">
+                        <button class="btn btn-secondary" onclick="prevStep(2)">← Retour</button>
+                        <button class="btn btn-primary" onclick="nextStep(2)">Continuer →</button>
+                    </div>
                 </div>
             </div>
 
-            <!-- ÉTAPE 3 : Usage principal -->
-            <div class="step" id="step3">
+            <!-- Étape 3 : Usage principal -->
+            <div class="step-container" id="step3">
                 <div class="step-header">
-                    <div class="step-number">3</div>
+                    <span class="step-number">Étape 3 sur 7</span>
                     <h1>Usage principal</h1>
-                    <p class="step-description">Quel est l'objectif principal de ce système ?</p>
+                    <p>Définissez l'objectif principal de ce système d'IA.</p>
                 </div>
                 
-                <div class="panel">
+                <div class="form-card">
                     <div class="form-group">
-                        <label>Sélectionnez l'usage principal *</label>
-                        <div class="options-grid" id="modelUsageOptions">
-                            <div class="option-card" onclick="selectOption('modelUsage', 'credit_scoring', 'Évaluation risque crédit (personnes physiques)')">
-                                <div class="option-title">Évaluation risque crédit (personnes physiques)</div>
-                                <div class="option-desc">⚠️ Classé automatiquement High-Risk par l'Annexe III de l'EU AI Act</div>
-                            </div>
-                            <div class="option-card" onclick="selectOption('modelUsage', 'credit_scoring_moral', 'Évaluation risque crédit (entreprises)')">
-                                <div class="option-title">Évaluation risque crédit (entreprises)</div>
-                                <div class="option-desc">Scoring pour personnes morales et entreprises</div>
-                            </div>
-                            <div class="option-card" onclick="selectOption('modelUsage', 'fraud_detection', 'Détection de fraude')">
-                                <div class="option-title">Détection de fraude</div>
-                                <div class="option-desc">Identification de transactions ou comportements suspects</div>
-                            </div>
-                            <div class="option-card" onclick="selectOption('modelUsage', 'pricing', 'Pricing / Tarification')">
-                                <div class="option-title">Pricing / Tarification</div>
-                                <div class="option-desc">Calcul des taux, primes ou tarifs personnalisés</div>
-                            </div>
-                            <div class="option-card" onclick="selectOption('modelUsage', 'collection', 'Recouvrement')">
-                                <div class="option-title">Recouvrement</div>
-                                <div class="option-desc">Gestion des impayés et stratégies de recouvrement</div>
-                            </div>
-                            <div class="option-card" onclick="selectOption('modelUsage', 'other', 'Autre usage')">
-                                <div class="option-title">Autre usage</div>
-                                <div class="option-desc">Précisez dans les notes à l'étape suivante</div>
-                            </div>
-                        </div>
-                        <input type="hidden" id="modelUsage">
-                        <div class="error-message" id="error-modelUsage">Veuillez sélectionner un usage principal.</div>
+                        <label for="modelUsage">Usage principal du système *</label>
+                        <select id="modelUsage" required>
+                            <option value="">Sélectionner l'usage...</option>
+                            <option value="credit_scoring">Évaluation du risque crédit (personnes physiques) - Annexe III 5(b)</option>
+                            <option value="credit_scoring_moral">Évaluation du risque crédit (personnes morales)</option>
+                            <option value="fraud_detection">Détection de fraude et prévention</option>
+                            <option value="pricing">Pricing / Tarification personnalisée</option>
+                            <option value="collection">Recouvrement et gestion des impayés</option>
+                            <option value="other">Autre usage lié au crédit</option>
+                        </select>
+                        <div class="label-hint">L'évaluation du risque crédit pour les particuliers est classée high-risk par l'Annexe III point 5(b) de l'EU AI Act.</div>
+                        <div class="error-message">Veuillez sélectionner un usage principal</div>
                     </div>
-                </div>
-                
-                <div class="btn-group">
-                    <button class="btn btn-secondary" onclick="prevStep(3)">← Retour</button>
-                    <button class="btn btn-primary" onclick="validateAndNext(3)">Continuer →</button>
+                    
+                    <div class="form-group">
+                        <label for="modelDate">Date de mise en production ou de déploiement prévu *</label>
+                        <input type="date" id="modelDate" required>
+                        <div class="error-message">Veuillez sélectionner une date</div>
+                    </div>
+                    
+                    <div class="btn-group">
+                        <button class="btn btn-secondary" onclick="prevStep(3)">← Retour</button>
+                        <button class="btn btn-primary" onclick="nextStep(3)">Continuer →</button>
+                    </div>
                 </div>
             </div>
 
-            <!-- ÉTAPE 4 : Caractéristiques -->
-            <div class="step" id="step4">
+            <!-- Étape 4 : Caractéristiques du système -->
+            <div class="step-container" id="step4">
                 <div class="step-header">
-                    <div class="step-number">4</div>
+                    <span class="step-number">Étape 4 sur 7</span>
                     <h1>Caractéristiques du système</h1>
-                    <p class="step-description">Cochez les éléments qui s'appliquent à ce modèle.</p>
+                    <p>Cochez les éléments qui s'appliquent à ce modèle. Ces critères déterminent le niveau de risque.</p>
                 </div>
                 
-                <div class="panel">
+                <div class="form-card">
                     <div class="form-group">
-                        <label>Sélectionnez les caractéristiques applicables</label>
+                        <label>Caractéristiques techniques et opérationnelles</label>
                         <div class="checkbox-group">
                             <div class="checkbox-item" onclick="toggleCheckbox('automatedDecision')">
-                                <input type="checkbox" id="automatedDecision">
-                                <div class="checkbox-content">
-                                    <div class="checkbox-title">Décision entièrement automatisée</div>
-                                    <div class="checkbox-desc">Aucune intervention humaine dans le processus de décision final</div>
-                                </div>
+                                <input type="checkbox" id="automatedDecision" value="true">
+                                <label for="automatedDecision">
+                                    <strong>Décision entièrement automatisée</strong>
+                                    Le système prend des décisions sans intervention humaine significative (profiling automatisé)
+                                </label>
                             </div>
                             <div class="checkbox-item" onclick="toggleCheckbox('personalData')">
-                                <input type="checkbox" id="personalData">
-                                <div class="checkbox-content">
-                                    <div class="checkbox-title">Traite des données personnelles sensibles</div>
-                                    <div class="checkbox-desc">Données de santé, biométrie, opinions politiques, etc.</div>
-                                </div>
+                                <input type="checkbox" id="personalData" value="true">
+                                <label for="personalData">
+                                    <strong>Données personnelles sensibles</strong>
+                                    Traitement de données sensibles (revenus, santé, biométrie, données de géolocalisation précises)
+                                </label>
                             </div>
                             <div class="checkbox-item" onclick="toggleCheckbox('profiling')">
-                                <input type="checkbox" id="profiling">
-                                <div class="checkbox-content">
-                                    <div class="checkbox-title">Profiling systématique des clients</div>
-                                    <div class="checkbox-desc">Analyse automatisée pour évaluer des aspects personnels</div>
-                                </div>
+                                <input type="checkbox" id="profiling" value="true">
+                                <label for="profiling">
+                                    <strong>Profiling systématique</strong>
+                                    Évaluation automatisée des aspects personnels (performance économique, comportement, préférences)
+                                </label>
                             </div>
                             <div class="checkbox-item" onclick="toggleCheckbox('thirdParty')">
-                                <input type="checkbox" id="thirdParty">
-                                <div class="checkbox-content">
-                                    <div class="checkbox-title">Fourni par un tiers (SaaS / Cloud)</div>
-                                    <div class="checkbox-desc">Solution externe, hébergée chez un fournisseur</div>
-                                </div>
+                                <input type="checkbox" id="thirdParty" value="true">
+                                <label for="thirdParty">
+                                    <strong>Fournisseur tiers (SaaS/Cloud)</strong>
+                                    Solution hébergée ou fournie par un prestataire externe (ex : FICO, SAS, cloud AWS/Azure)
+                                </label>
                             </div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="btn-group">
-                    <button class="btn btn-secondary" onclick="prevStep(4)">← Retour</button>
-                    <button class="btn btn-primary" onclick="nextStep(4)">Continuer →</button>
+                    
+                    <div class="btn-group">
+                        <button class="btn btn-secondary" onclick="prevStep(4)">← Retour</button>
+                        <button class="btn btn-primary" onclick="nextStep(4)">Continuer →</button>
+                    </div>
                 </div>
             </div>
 
-            <!-- ÉTAPE 5 : Contexte et notes -->
-            <div class="step" id="step5">
+            <!-- Étape 5 : Notes et contexte -->
+            <div class="step-container" id="step5">
                 <div class="step-header">
-                    <div class="step-number">5</div>
-                    <h1>Contexte complémentaire</h1>
-                    <p class="step-description">Ajoutez des informations utiles pour l'audit.</p>
+                    <span class="step-number">Étape 5 sur 7</span>
+                    <h1>Contexte additionnel</h1>
+                    <p>Ajoutez des informations complémentaires pour enrichir l'analyse.</p>
                 </div>
                 
-                <div class="panel">
+                <div class="form-card">
                     <div class="form-group">
-                        <label for="modelDate">Date de mise en production *</label>
-                        <input type="date" id="modelDate">
-                        <div class="label-hint">Les systèmes déployés avant 2025 ont des obligations de conformité rétroactive.</div>
-                        <div class="error-message" id="error-modelDate">Veuillez sélectionner une date.</div>
+                        <label for="modelNotes">Notes / Contexte spécifique</label>
+                        <textarea id="modelNotes" placeholder="Décrivez : le fournisseur technique, la documentation existante, les processus de gouvernance actuels, les points de vigilance identifiés..."></textarea>
+                        <div class="label-hint">Ces informations apparaîtront dans votre rapport PDF.</div>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="modelNotes">Notes et contexte</label>
-                        <textarea id="modelNotes" placeholder="Fournisseur, documentation existante, équipe responsable, historique du projet..."></textarea>
-                        <div class="label-hint">Ces informations aideront à prioriser les actions de conformité.</div>
+                    <div class="btn-group">
+                        <button class="btn btn-secondary" onclick="prevStep(5)">← Retour</button>
+                        <button class="btn btn-primary" onclick="validateAndAddModel()">Valider ce modèle</button>
                     </div>
-                </div>
-                
-                <div class="btn-group">
-                    <button class="btn btn-secondary" onclick="prevStep(5)">← Retour</button>
-                    <button class="btn btn-primary" onclick="validateAndNext(5)">Ajouter au registre →</button>
                 </div>
             </div>
 
-            <!-- ÉTAPE 6 : Résumé et statistiques -->
-            <div class="step" id="step6">
+            <!-- Étape 6 : Résumé et statistiques -->
+            <div class="step-container" id="step6">
                 <div class="step-header">
-                    <div class="step-number">6</div>
+                    <span class="step-number">Étape 6 sur 7</span>
                     <h1>Résumé de l'inventaire</h1>
-                    <p class="step-description">Voici l'état de conformité de vos modèles.</p>
+                    <p>Voici la classification de vos modèles et leur niveau de conformité estimé.</p>
                 </div>
                 
                 <div id="summaryContent">
-                    <!-- Rempli dynamiquement -->
+                    <!-- Contenu dynamique injecté ici -->
                 </div>
                 
-                <div class="btn-group">
+                <div class="btn-group" style="margin-top: 32px;">
                     <button class="btn btn-secondary" onclick="addAnotherModel()">+ Ajouter un autre modèle</button>
-                    <button class="btn btn-primary" onclick="nextStep(6)">Voir les actions →</button>
+                    <button class="btn btn-primary" onclick="nextStep(6)">Voir la checklist →</button>
                 </div>
             </div>
 
-            <!-- ÉTAPE 7 : Export et actions -->
-            <div class="step" id="step7">
+            <!-- Étape 7 : Export et finalisation -->
+            <div class="step-container" id="step7">
                 <div class="step-header">
-                    <div class="step-number">7</div>
-                    <h1>Vos prochaines étapes</h1>
-                    <p class="step-description">Téléchargez vos rapports et planifiez vos actions de conformité.</p>
+                    <div class="success-icon">✓</div>
+                    <h1>Votre analyse est prête</h1>
+                    <p>Téléchargez votre rapport de conformité et votre checklist EU AI Act.</p>
                 </div>
                 
-                <div id="finalActions">
-                    <!-- Rempli dynamiquement -->
+                <div class="alert">
+                    <strong>Obligation légale :</strong> Date limite de conformité pour les systèmes high-risk (Annexe III) : <strong>2 août 2026</strong>. Les manquements peuvent entraîner des sanctions jusqu'à 15 millions d'euros ou 3% du CA mondial.
+                </div>
+                
+                <div class="form-card">
+                    <h3 style="margin-bottom: 20px; color: var(--primary);">Ce qui est déjà résolu :</h3>
+                    <ul style="margin-bottom: 24px; padding-left: 20px; line-height: 2; color: var(--text);">
+                        <li>Inventaire initial des systèmes d'IA établi</li>
+                        <li>Classification high-risk vs conforme effectuée</li>
+                        <li>Identification des fournisseurs tiers et dépendances</li>
+                    </ul>
+                    
+                    <h3 style="margin-bottom: 20px; color: var(--primary);">Prochaines étapes recommandées :</h3>
+                    <ul style="margin-bottom: 32px; padding-left: 20px; line-height: 2; color: var(--text);">
+                        <li>Établir la documentation technique (Article 11)</li>
+                        <li>Mettre en place le système de Risk Management (Article 9)</li>
+                        <li>Conduire une évaluation d'impact sur les droits fondamentaux (FRIA)</li>
+                        <li>Mettre en place la supervision humaine effective (Article 14)</li>
+                        <li>Procéder à l'évaluation de conformité (Article 20)</li>
+                    </ul>
+                    
+                    <div class="final-actions">
+                        <button class="btn btn-primary" onclick="generateFullPDF()">
+                            📄 Rapport Complet PDF
+                        </button>
+                        <button class="btn btn-success" onclick="generateChecklistPDF()">
+                            ✅ Checklist Articles 9-20
+                        </button>
+                    </div>
+                    
+                    <div style="margin-top: 24px; text-align: center;">
+                        <button class="btn btn-secondary" onclick="submitToTracking()" style="width: auto; padding: 12px 24px; font-size: 14px;">
+                            Envoyer les résultats à l'équipe conformité
+                        </button>
+                        <p style="font-size: 12px; color: var(--text-light); margin-top: 8px;">
+                            Les données seront envoyées vers Google Forms et sauvegardées dans une feuille Excel
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -870,227 +896,207 @@
         <div class="container">
             <div class="footer-content">
                 <a href="https://homieuxmedia.com" target="_blank" rel="noopener">
-                    <img src="logo-homieux.png" alt="Homieux Media" class="footer-logo" onerror="this.src='https://via.placeholder.com/150x40/000887/FFFFFF?text=HOMIEUX'">
+                    <!-- LOGO DANS LE MEME REPOSITORY -->
+                    <img src="logo-homieux.png" alt="Homieux Media" class="footer-logo">
                 </a>
                 <div class="footer-links">
                     <a href="https://www.homieuxmedia.com/politique-de-confidentialite" target="_blank" rel="noopener">Politique de confidentialité</a>
                     <a href="https://www.homieuxmedia.com/conditions-dutilisation" target="_blank" rel="noopener">Conditions d'utilisation</a>
-                    <a href="https://cal.com/homieux-media/discovery-call-gratuit-discutons-de-vos-defis" target="_blank" rel="noopener">Appel découverte 15 min</a>
+                    <a href="https://cal.com/homieux-media/discovery-call-gratuit-discutons-de-vos-defis" target="_blank" rel="noopener">Appel Découverte 15 min</a>
                 </div>
             </div>
             <div class="footer-bottom">
-                © 2026 Homieux Media. Outil de conformité EU AI Act pour institutions financières.
+                © 2026 Homieux Media. Outil de conformité EU AI Act pour institutions financières. Aucune donnée n'est stockée sur nos serveurs — traitement local uniquement.
             </div>
         </div>
     </footer>
 
     <script>
-        // Configuration Google Sheets
-        const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/VOTRE_SCRIPT_ID/exec';
-        
-        // État de l'application
+        // ==========================================
+        // CONFIGURATION GOOGLE FORMS - À MODIFIER
+        // ==========================================
+        const GOOGLE_FORM_CONFIG = {
+            // Remplacez par l'ID de votre Google Form (voir tutoriel étape 3)
+            formId: 'VOTRE_FORM_ID_ICI',
+            
+            // Entry IDs des questions (voir tutoriel étape 4)
+            entryIds: {
+                company: 'entry.1234567890',      // ID pour "Nom de l'entreprise"
+                position: 'entry.0987654321',     // ID pour "Poste"
+                timestamp: 'entry.1122334455',    // ID pour "Date et heure"
+                totalModels: 'entry.2233445566',  // ID pour "Nombre de modèles"
+                highRiskCount: 'entry.3344556677', // ID pour "Nombre high-risk"
+                jsonData: 'entry.4455667788'      // ID pour "Données complètes (JSON)"
+            }
+        };
+
+        // Stockage local des données
         let currentStep = 1;
-        let userData = {};
+        let userData = {
+            company: '',
+            position: ''
+        };
+        let models = JSON.parse(localStorage.getItem('euaiact_models') || '[]');
         let currentModel = {};
-        let models = JSON.parse(localStorage.getItem('scoringModels_v2') || '[]');
-        
+
         // Initialisation
         document.addEventListener('DOMContentLoaded', function() {
-            updateProgress();
+            updateProgressUI();
             
-            // Restaurer données utilisateur si existantes
-            const savedUser = JSON.parse(localStorage.getItem('userData') || '{}');
-            if (savedUser.companyName) {
-                document.getElementById('companyName').value = savedUser.companyName;
-                document.getElementById('userTitle').value = savedUser.userTitle || '';
-                document.getElementById('userEmail').value = savedUser.userEmail || '';
+            // Restaurer les données si existantes
+            const savedUser = localStorage.getItem('euaiact_user');
+            if (savedUser) {
+                userData = JSON.parse(savedUser);
+                document.getElementById('companyName').value = userData.company || '';
+                document.getElementById('userPosition').value = userData.position || '';
             }
         });
-        
-        // Navigation
-        function updateProgress() {
-            const percent = Math.round((currentStep / 7) * 100);
-            document.getElementById('currentStepNum').textContent = currentStep;
-            document.getElementById('progressPercent').textContent = percent + '%';
-            document.getElementById('progressBar').style.width = percent + '%';
-        }
-        
-        function showStep(step) {
-            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-            document.getElementById('step' + step).classList.add('active');
-            currentStep = step;
-            updateProgress();
-            window.scrollTo(0, 0);
-        }
-        
-        function nextStep(fromStep) {
-            showStep(fromStep + 1);
-            
-            if (fromStep + 1 === 6) {
-                renderSummary();
-            } else if (fromStep + 1 === 7) {
-                renderFinalActions();
-                submitToGoogleSheets();
-            }
-        }
-        
-        function prevStep(fromStep) {
-            showStep(fromStep - 1);
-        }
-        
-        // Validation
-        function validateAndNext(step) {
-            let isValid = true;
+
+        // Navigation entre étapes
+        function nextStep(step) {
+            if (!validateStep(step)) return;
             
             if (step === 1) {
-                const company = document.getElementById('companyName').value.trim();
-                const title = document.getElementById('userTitle').value.trim();
-                const email = document.getElementById('userEmail').value.trim();
-                
-                if (!company) {
-                    showError('companyName');
-                    isValid = false;
-                } else {
-                    hideError('companyName');
-                }
-                
-                if (!title) {
-                    showError('userTitle');
-                    isValid = false;
-                } else {
-                    hideError('userTitle');
-                }
-                
-                if (!email || !email.includes('@')) {
-                    showError('userEmail');
-                    isValid = false;
-                } else {
-                    hideError('userEmail');
-                }
-                
-                if (isValid) {
-                    userData = { companyName: company, userTitle: title, userEmail: email };
-                    localStorage.setItem('userData', JSON.stringify(userData));
-                }
+                // Sauvegarder infos entreprise
+                userData.company = document.getElementById('companyName').value.trim();
+                userData.position = document.getElementById('userPosition').value.trim();
+                localStorage.setItem('euaiact_user', JSON.stringify(userData));
             }
             
-            if (step === 2) {
-                const name = document.getElementById('modelName').value.trim();
-                const type = document.getElementById('modelType').value;
-                
-                if (!name) {
-                    showError('modelName');
-                    isValid = false;
-                } else {
-                    hideError('modelName');
-                    currentModel.name = name;
-                }
-                
-                if (!type) {
-                    showError('modelType');
-                    isValid = false;
-                } else {
-                    hideError('modelType');
-                }
-            }
+            document.getElementById(`step${step}`).classList.remove('active');
+            document.getElementById(`step${step + 1}`).classList.add('active');
+            currentStep = step + 1;
+            updateProgressUI();
             
-            if (step === 3) {
-                const usage = document.getElementById('modelUsage').value;
-                
-                if (!usage) {
-                    showError('modelUsage');
-                    isValid = false;
-                } else {
-                    hideError('modelUsage');
-                }
-            }
-            
-            if (step === 5) {
-                const date = document.getElementById('modelDate').value;
-                
-                if (!date) {
-                    showError('modelDate');
-                    isValid = false;
-                } else {
-                    hideError('modelDate');
-                }
-            }
-            
-            if (isValid) {
-                nextStep(step);
+            // Si étape 6, générer le résumé
+            if (currentStep === 6) {
+                renderSummary();
             }
         }
-        
-        function showError(fieldId) {
-            document.getElementById(fieldId).classList.add('error');
-            document.getElementById('error-' + fieldId).classList.add('visible');
+
+        function prevStep(step) {
+            document.getElementById(`step${step}`).classList.remove('active');
+            document.getElementById(`step${step - 1}`).classList.add('active');
+            currentStep = step - 1;
+            updateProgressUI();
         }
-        
-        function hideError(fieldId) {
-            document.getElementById(fieldId).classList.remove('error');
-            document.getElementById('error-' + fieldId).classList.remove('visible');
-        }
-        
-        // Sélection d'options
-        function selectOption(field, value, label) {
-            document.getElementById(field).value = value;
-            currentModel[field] = value;
-            currentModel[field + 'Label'] = label;
+
+        function validateStep(step) {
+            let valid = true;
+            const stepEl = document.getElementById(`step${step}`);
+            const requiredFields = stepEl.querySelectorAll('[required]');
             
-            // Visuel
-            document.querySelectorAll('#' + field + 'Options .option-card').forEach(card => {
-                card.classList.remove('selected');
+            requiredFields.forEach(field => {
+                const errorMsg = field.parentNode.querySelector('.error-message');
+                if (!field.value.trim()) {
+                    field.classList.add('error');
+                    if (errorMsg) errorMsg.classList.add('visible');
+                    valid = false;
+                } else {
+                    field.classList.remove('error');
+                    if (errorMsg) errorMsg.classList.remove('visible');
+                }
             });
-            event.currentTarget.classList.add('selected');
             
-            hideError(field);
+            return valid;
         }
-        
+
+        function updateProgressUI() {
+            const steps = document.querySelectorAll('.progress-step');
+            const lines = document.querySelectorAll('.progress-line');
+            
+            steps.forEach((step, index) => {
+                const stepNum = index + 1;
+                step.classList.remove('active', 'completed');
+                
+                if (stepNum < currentStep) {
+                    step.classList.add('completed');
+                    step.innerHTML = '✓';
+                } else if (stepNum === currentStep) {
+                    step.classList.add('active');
+                    step.innerHTML = stepNum;
+                } else {
+                    step.innerHTML = stepNum;
+                }
+            });
+            
+            lines.forEach((line, index) => {
+                line.classList.remove('completed');
+                if (index < currentStep - 1) {
+                    line.classList.add('completed');
+                }
+            });
+        }
+
         function toggleCheckbox(id) {
             const checkbox = document.getElementById(id);
             checkbox.checked = !checkbox.checked;
-            event.currentTarget.classList.toggle('checked', checkbox.checked);
-            currentModel[id] = checkbox.checked;
         }
-        
-        // Ajout du modèle
-        function addModel() {
-            currentModel.date = document.getElementById('modelDate').value;
-            currentModel.notes = document.getElementById('modelNotes').value;
-            currentModel.id = Date.now();
-            currentModel.addedAt = new Date().toISOString();
+
+        function validateAndAddModel() {
+            // Collecter les données du modèle
+            currentModel = {
+                id: Date.now(),
+                name: document.getElementById('modelName').value.trim(),
+                type: document.getElementById('modelType').value,
+                typeLabel: document.getElementById('modelType').options[document.getElementById('modelType').selectedIndex].text,
+                usage: document.getElementById('modelUsage').value,
+                usageLabel: document.getElementById('modelUsage').options[document.getElementById('modelUsage').selectedIndex].text,
+                date: document.getElementById('modelDate').value,
+                automated: document.getElementById('automatedDecision').checked,
+                personalData: document.getElementById('personalData').checked,
+                profiling: document.getElementById('profiling').checked,
+                thirdParty: document.getElementById('thirdParty').checked,
+                notes: document.getElementById('modelNotes').value.trim(),
+                addedAt: new Date().toISOString()
+            };
             
-            // Détermination High-Risk
+            // Déterminer si high-risk
             currentModel.isHighRisk = determineHighRisk(currentModel);
             currentModel.status = currentModel.isHighRisk ? 'high-risk' : 'compliant';
             
+            // Ajouter au tableau
             models.push(currentModel);
-            localStorage.setItem('scoringModels_v2', JSON.stringify(models));
+            localStorage.setItem('euaiact_models', JSON.stringify(models));
             
-            // Reset pour prochain modèle
-            currentModel = {};
+            // Réinitialiser le formulaire pour le prochain modèle
+            resetModelForm();
+            
+            // Passer à l'étape 6
+            document.getElementById('step5').classList.remove('active');
+            document.getElementById('step6').classList.add('active');
+            currentStep = 6;
+            updateProgressUI();
+            renderSummary();
+        }
+
+        function determineHighRisk(model) {
+            // Annexe III 5(b) : évaluation crédit personnes physiques = high-risk
+            if (model.usage === 'credit_scoring') return true;
+            
+            // Profiling automatisé = toujours high-risk selon Article 6(3)
+            if (model.profiling && model.automated) return true;
+            
+            // Deep Learning + décision automatisée = probablement high-risk
+            if ((model.type === 'dl' || model.type === 'genai') && model.automated) return true;
+            
+            return false;
+        }
+
+        function resetModelForm() {
             document.getElementById('modelName').value = '';
             document.getElementById('modelType').value = '';
             document.getElementById('modelUsage').value = '';
             document.getElementById('modelDate').value = '';
+            document.getElementById('automatedDecision').checked = false;
+            document.getElementById('personalData').checked = false;
+            document.getElementById('profiling').checked = false;
+            document.getElementById('thirdParty').checked = false;
             document.getElementById('modelNotes').value = '';
-            document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
-            document.querySelectorAll('.checkbox-item').forEach(c => {
-                c.classList.remove('checked');
-                c.querySelector('input').checked = false;
-            });
-            
-            nextStep(5);
         }
-        
-        function determineHighRisk(model) {
-            if (model.modelUsage === 'credit_scoring') return true;
-            if ((model.modelType === 'dl' || model.modelType === 'genai') && model.automatedDecision) return true;
-            return false;
-        }
-        
-        // Rendu du résumé
+
         function renderSummary() {
+            const container = document.getElementById('summaryContent');
             const total = models.length;
             const highRisk = models.filter(m => m.isHighRisk).length;
             const compliant = models.filter(m => !m.isHighRisk).length;
@@ -1102,316 +1108,396 @@
                         <div class="stat-label">Modèles inventoriés</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-number danger">${highRisk}</div>
+                        <div class="stat-number" style="color: var(--danger);">${highRisk}</div>
                         <div class="stat-label">High-Risk (Annexe III)</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-number success">${compliant}</div>
-                        <div class="stat-label">Conformes</div>
+                        <div class="stat-number" style="color: var(--success);">${compliant}</div>
+                        <div class="stat-label">Conformes / Non high-risk</div>
                     </div>
                 </div>
                 
-                <div class="summary-card">
-                    <div class="summary-title">Vos informations</div>
-                    <div class="summary-item">
-                        <span class="summary-label">Entreprise</span>
-                        <span class="summary-value">${escapeHtml(userData.companyName)}</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="summary-label">Votre poste</span>
-                        <span class="summary-value">${escapeHtml(userData.userTitle)}</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="summary-label">Email</span>
-                        <span class="summary-value">${escapeHtml(userData.userEmail)}</span>
-                    </div>
-                </div>
+                <div class="form-card" style="margin-top: 24px;">
+                    <h3 style="margin-bottom: 20px; color: var(--primary);">Détail des modèles analysés</h3>
             `;
             
-            if (models.length > 0) {
-                html += `<div class="summary-card"><div class="summary-title">Détail des modèles</div>`;
-                models.forEach(model => {
+            if (models.length === 0) {
+                html += `<p style="color: var(--text-light); text-align: center; padding: 24px;">Aucun modèle enregistré</p>`;
+            } else {
+                models.forEach((model, index) => {
+                    const badgeClass = model.isHighRisk ? 'badge-high-risk' : 'badge-compliant';
+                    const badgeText = model.isHighRisk ? 'High-Risk' : 'Conforme';
+                    
                     html += `
                         <div class="model-summary">
                             <div class="model-summary-header">
-                                <span class="model-summary-name">${escapeHtml(model.name)}</span>
-                                <span class="model-summary-status" style="background: ${model.isHighRisk ? '#fee2e2' : '#d1fae5'}; color: ${model.isHighRisk ? 'var(--danger)' : 'var(--success)'};">
-                                    ${model.isHighRisk ? 'HIGH-RISK' : 'CONFORME'}
-                                </span>
+                                <span class="model-summary-name">${index + 1}. ${escapeHtml(model.name)}</span>
+                                <span class="badge ${badgeClass}">${badgeText}</span>
                             </div>
                             <div class="model-summary-meta">
-                                ${model.modelTypeLabel} • ${model.modelUsageLabel} • ${formatDate(model.date)}
+                                ${model.typeLabel} • ${model.usageLabel} • Mise en production : ${formatDate(model.date)}
+                                ${model.thirdParty ? ' • Fournisseur tiers' : ''}
+                                ${model.automated ? ' • Décision automatisée' : ''}
                             </div>
                         </div>
                     `;
                 });
-                html += `</div>`;
             }
             
-            html += `
-                <div class="summary-card">
-                    <div class="summary-title">Ce qui est déjà résolu</div>
-                    <div style="font-size: 14px; color: var(--text-light); line-height: 1.8;">
-                        ✅ Inventaire complété de ${total} modèle${total > 1 ? 's' : ''}<br>
-                        ✅ Classification High-Risk / Conforme établie<br>
-                        ${compliant > 0 ? '✅ ' + compliant + ' modèle' + (compliant > 1 ? 's' : '') + ' sans obligation supplémentaire<br>' : ''}
-                    </div>
-                </div>
-                
-                <div class="summary-card">
-                    <div class="summary-title">Ce qui reste à faire</div>
-                    <div style="font-size: 14px; color: var(--text-light); line-height: 1.8;">
-                        ${highRisk > 0 ? '⚠️ <strong>' + highRisk + ' modèle' + (highRisk > 1 ? 's' : '') + ' High-Risk</strong> nécessitent :<br>' +
-                            '&nbsp;&nbsp;&nbsp;• Documentation technique (Article 11)<br>' +
-                            '&nbsp;&nbsp;&nbsp;• Système de Risk Management (Article 9)<br>' +
-                            '&nbsp;&nbsp;&nbsp;• Human Oversight (Article 14)<br>' +
-                            '&nbsp;&nbsp;&nbsp;• Conformity Assessment avant août 2026<br>' : '✅ Aucune action requise pour les modèles actuels'}
-                    </div>
-                </div>
-            `;
+            html += `</div>`;
             
-            document.getElementById('summaryContent').innerHTML = html;
-        }
-        
-        function renderFinalActions() {
-            const highRisk = models.filter(m => m.isHighRisk).length;
-            
-            let html = `
-                <div class="action-cards">
-                    <div class="action-card" onclick="generateFullPDF()">
-                        <div class="action-icon">📄</div>
-                        <div class="action-title">Rapport complet PDF</div>
-                        <div class="action-desc">Inventaire, statistiques et recommandations pour votre direction</div>
-                    </div>
-                    
-                    <div class="action-card" onclick="generateChecklistPDF()">
-                        <div class="action-icon">✅</div>
-                        <div class="action-title">Checklist de conformité</div>
-                        <div class="action-desc">Liste des 8 obligations légales à valider pour les systèmes High-Risk</div>
-                    </div>
-                    
-                    <div class="action-card" onclick="window.open('https://cal.com/homieux-media/discovery-call-gratuit-discutons-de-vos-defis', '_blank')">
-                        <div class="action-icon">📞</div>
-                        <div class="action-title">Appel avec un expert</div>
-                        <div class="action-desc">15 minutes pour prioriser vos actions de conformité</div>
-                    </div>
-                </div>
-            `;
-            
+            // Ajouter la checklist si des modèles high-risk existent
             if (highRisk > 0) {
                 html += `
-                    <div class="panel" style="margin-top: 24px; border-color: var(--warning); background: #fffbeb;">
-                        <div style="font-weight: 600; color: #92400e; margin-bottom: 12px;">⚠️ Action recommandée</div>
-                        <p style="font-size: 14px; color: #78350f; margin-bottom: 16px;">
-                            Vous avez ${highRisk} modèle${highRisk > 1 ? 's' : ''} classé${highRisk > 1 ? 's' : ''} High-Risk. 
-                            La date limite de conformité est le <strong>2 août 2026</strong>.
-                        </p>
-                        <a href="https://cal.com/homieux-media/discovery-call-gratuit-discutons-de-vos-defis" target="_blank" class="btn btn-primary" style="width: 100%;">
-                            Planifier un appel découverte →
-                        </a>
+                    <div class="checklist-container">
+                        <h3 style="margin-bottom: 20px; color: var(--primary);">Checklist de conformité obligatoire (Articles 9-20)</h3>
+                        <div class="checklist-item">
+                            <input type="checkbox" class="checklist-checkbox" id="chk-risk" onchange="updateChecklistProgress()">
+                            <div class="checklist-content">
+                                <h4>Système de Risk Management (Article 9)</h4>
+                                <p>Mise en place d'un système de gestion des risques tout au long du cycle de vie du système d'IA</p>
+                            </div>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" class="checklist-checkbox" id="chk-data" onchange="updateChecklistProgress()">
+                            <div class="checklist-content">
+                                <h4>Data Governance (Article 10)</h4>
+                                <p>Qualité, représentativité et absence de biais dans les jeux de données d'entraînement, validation et test</p>
+                            </div>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" class="checklist-checkbox" id="chk-doc" onchange="updateChecklistProgress()">
+                            <div class="checklist-content">
+                                <h4>Documentation Technique (Article 11)</h4>
+                                <p>Documentation complète décrivant le système, ses capacités et limites, conforme à l'Annexe IV</p>
+                            </div>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" class="checklist-checkbox" id="chk-logs" onchange="updateChecklistProgress()">
+                            <div class="checklist-content">
+                                <h4>Record-Keeping (Article 12)</h4>
+                                <p>Capacité à enregistrer et conserver les logs des événements tout au long du cycle de vie</p>
+                            </div>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" class="checklist-checkbox" id="chk-transparency" onchange="updateChecklistProgress()">
+                            <div class="checklist-content">
+                                <h4>Transparence et Information (Article 13)</h4>
+                                <p>Le système est conçu pour être suffisamment transparent pour permettre l'interprétation des résultats</p>
+                            </div>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" class="checklist-checkbox" id="chk-human" onchange="updateChecklistProgress()">
+                            <div class="checklist-content">
+                                <h4>Supervision Humaine (Article 14)</h4>
+                                <p>Mesures de supervision humaine effective, y compris possibilité d'intervention et d'override</p>
+                            </div>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" class="checklist-checkbox" id="chk-security" onchange="updateChecklistProgress()">
+                            <div class="checklist-content">
+                                <h4>Exactitude, Robustesse, Cybersécurité (Article 15)</h4>
+                                <p>Mesures pour assurer exactitude, robustesse et sécurité du système</p>
+                            </div>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" class="checklist-checkbox" id="chk-conformity" onchange="updateChecklistProgress()">
+                            <div class="checklist-content">
+                                <h4>Évaluation de Conformité (Article 20)</h4>
+                                <p>Évaluation de conformité réalisée avant déploiement (organisme notifié ou auto-évaluation)</p>
+                            </div>
+                        </div>
+                        <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border);">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; font-weight: 600;">
+                                <span>Progression de la conformité</span>
+                                <span id="checklistPercent">0%</span>
+                            </div>
+                            <div style="height: 8px; background: var(--border); border-radius: 4px; overflow: hidden;">
+                                <div id="checklistProgressBar" style="height: 100%; background: var(--primary); width: 0%; transition: width 0.3s;"></div>
+                            </div>
+                        </div>
                     </div>
                 `;
             }
             
-            document.getElementById('finalActions').innerHTML = html;
+            container.innerHTML = html;
         }
-        
-        function addAnotherModel() {
-            showStep(2);
-        }
-        
-        // Soumission Google Sheets
-        function submitToGoogleSheets() {
-            const data = {
-                timestamp: new Date().toISOString(),
-                companyName: userData.companyName,
-                userTitle: userData.userTitle,
-                userEmail: userData.userEmail,
-                modelsCount: models.length,
-                highRiskCount: models.filter(m => m.isHighRisk).length,
-                models: JSON.stringify(models.map(m => ({
-                    name: m.name,
-                    type: m.modelTypeLabel,
-                    usage: m.modelUsageLabel,
-                    isHighRisk: m.isHighRisk,
-                    date: m.date
-                })))
-            };
+
+        function updateChecklistProgress() {
+            const checkboxes = document.querySelectorAll('.checklist-checkbox');
+            const checked = document.querySelectorAll('.checklist-checkbox:checked');
+            const percent = Math.round((checked.length / checkboxes.length) * 100);
             
-            fetch(GOOGLE_SHEET_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            }).catch(e => console.log('Soumission silencieuse'));
+            document.getElementById('checklistPercent').textContent = `${percent}%`;
+            document.getElementById('checklistProgressBar').style.width = `${percent}%`;
         }
-        
-        // Génération PDF
-        function generateFullPDF() {
+
+        function addAnotherModel() {
+            document.getElementById('step6').classList.remove('active');
+            document.getElementById('step2').classList.add('active');
+            currentStep = 2;
+            updateProgressUI();
+        }
+
+        // Génération PDF Premium avec logo
+        async function generateFullPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
+            const pageWidth = doc.internal.pageSize.getWidth();
+            
+            // Header avec rectangle de couleur
+            doc.setFillColor(0, 8, 135);
+            doc.rect(0, 0, pageWidth, 35, 'F');
+            
+            // Titre Homieux Media (en attendant le logo base64)
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(22);
+            doc.setFont('helvetica', 'bold');
+            doc.text('HOMIEUX MEDIA', 20, 22);
+            
+            doc.setFontSize(9);
+            doc.setFont('helvetica', 'normal');
+            doc.text('Conformité EU AI Act - Scoring Crédit High-Risk', 20, 30);
+            
+            // Titre du rapport
+            doc.setTextColor(0, 8, 135);
+            doc.setFontSize(18);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Rapport de Conformité EU AI Act', 20, 55);
+            
+            doc.setTextColor(100);
+            doc.setFontSize(11);
+            doc.setFont('helvetica', 'normal');
+            doc.text(`Généré le ${new Date().toLocaleDateString('fr-FR')} pour ${userData.company}`, 20, 65);
+            
+            // Informations entreprise
+            let y = 85;
+            doc.setFillColor(248, 249, 250);
+            doc.rect(20, y - 5, pageWidth - 40, 30, 'F');
+            
+            doc.setTextColor(0, 8, 135);
+            doc.setFontSize(12);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Informations client', 25, y + 5);
+            
+            doc.setTextColor(50);
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'normal');
+            doc.text(`Entreprise : ${userData.company}`, 25, y + 15);
+            doc.text(`Interlocuteur : ${userData.position}`, 25, y + 22);
+            
+            // Statistiques
+            y = 130;
+            doc.setTextColor(0, 8, 135);
+            doc.setFontSize(14);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Synthèse de l\'inventaire', 20, y);
+            
+            y += 15;
+            const total = models.length;
             const highRisk = models.filter(m => m.isHighRisk).length;
             const compliant = models.filter(m => !m.isHighRisk).length;
             
-            // Header avec logo placeholder
-            doc.setFillColor(0, 8, 135);
-            doc.rect(0, 0, 210, 40, 'F');
-            doc.setTextColor(255, 255, 255);
-            doc.setFontSize(24);
-            doc.text('HOMIEUX MEDIA', 20, 25);
-            doc.setFontSize(12);
-            doc.text('Suite EU AI Act pour Banques', 20, 32);
-            
-            // Titre
-            doc.setTextColor(0, 8, 135);
-            doc.setFontSize(20);
-            doc.text('Rapport de Conformité EU AI Act', 20, 60);
-            
-            // Infos entreprise
-            doc.setFontSize(11);
-            doc.setTextColor(100);
-            doc.text(`Entreprise : ${userData.companyName}`, 20, 75);
-            doc.text(`Contact : ${userData.userTitle}`, 20, 82);
-            doc.text(`Email : ${userData.userEmail}`, 20, 89);
-            doc.text(`Date du rapport : ${new Date().toLocaleDateString('fr-FR')}`, 20, 96);
-            
-            // Statistiques
-            doc.setFillColor(0, 8, 135);
-            doc.rect(20, 105, 170, 35, 'F');
-            doc.setTextColor(255, 255, 255);
-            doc.setFontSize(14);
-            doc.text('RÉSUMÉ DE L\'INVENTAIRE', 25, 115);
-            doc.setFontSize(11);
-            doc.text(`Total modèles : ${models.length}`, 25, 125);
-            doc.text(`High-Risk (Annexe III) : ${highRisk}`, 25, 132);
-            doc.text(`Conformes : ${compliant}`, 25, 139);
-            
-            // Détail des modèles
-            doc.setTextColor(0, 8, 135);
-            doc.setFontSize(14);
-            doc.text('DÉTAIL DES MODÈLES', 20, 155);
-            
-            let y = 165;
-            models.forEach((model, i) => {
-                if (y > 270) {
-                    doc.addPage();
-                    y = 20;
-                }
-                
-                doc.setFontSize(11);
-                doc.setTextColor(model.isHighRisk ? 239 : 16, model.isHighRisk ? 68 : 185, model.isHighRisk ? 68 : 129);
-                doc.text(`${i + 1}. ${model.name} [${model.isHighRisk ? 'HIGH-RISK' : 'CONFORME'}]`, 20, y);
-                y += 7;
-                
-                doc.setFontSize(9);
-                doc.setTextColor(80);
-                doc.text(`Technologie : ${model.modelTypeLabel}`, 25, y);
-                y += 5;
-                doc.text(`Usage : ${model.modelTypeLabel}`, 25, y);
-                y += 5;
-                doc.text(`Mise en production : ${formatDate(model.date)}`, 25, y);
-                y += 10;
-            });
-            
-            // Recommandations
-            if (y > 240) {
-                doc.addPage();
-                y = 20;
-            }
-            
-            doc.setTextColor(0, 8, 135);
-            doc.setFontSize(14);
-            doc.text('ACTIONS RECOMMANDÉES', 20, y);
-            y += 10;
-            
-            doc.setFontSize(10);
-            doc.setTextColor(50);
-            if (highRisk > 0) {
-                doc.text('1. Prioriser la conformité des ' + highRisk + ' modèle(s) High-Risk avant août 2026', 20, y);
-                y += 6;
-                doc.text('2. Établir la documentation technique (Article 11)', 20, y);
-                y += 6;
-                doc.text('3. Mettre en place le système de Risk Management (Article 9)', 20, y);
-                y += 6;
-                doc.text('4. Définir les procédures de Human Oversight (Article 14)', 20, y);
-                y += 6;
-                doc.text('5. Planifier la Conformity Assessment avec un notified body', 20, y);
-            } else {
-                doc.text('Aucune action immédiate requise. Maintenir la veille réglementaire.', 20, y);
-            }
-            
-            // Footer
-            doc.setFontSize(9);
-            doc.setTextColor(150);
-            doc.text('Document généré par Homieux Media - https://homieuxmedia.com', 20, 285);
-            
-            doc.save(`rapport-conformite-${userData.companyName.replace(/\s+/g, '-')}-${new Date().toISOString().split('T')[0]}.pdf`);
-        }
-        
-        function generateChecklistPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            
-            // Header
-            doc.setFillColor(0, 8, 135);
-            doc.rect(0, 0, 210, 40, 'F');
-            doc.setTextColor(255, 255, 255);
-            doc.setFontSize(24);
-            doc.text('HOMIEUX MEDIA', 20, 25);
+            // Box stats
+            doc.setDrawColor(0, 8, 135);
+            doc.setLineWidth(0.5);
+            doc.rect(20, y, 50, 25);
+            doc.rect(75, y, 50, 25);
+            doc.rect(130, y, 50, 25);
             
             doc.setTextColor(0, 8, 135);
             doc.setFontSize(18);
-            doc.text('Checklist de Conformité EU AI Act', 20, 55);
-            doc.setFontSize(11);
-            doc.setTextColor(100);
-            doc.text(`Pour : ${userData.companyName}`, 20, 65);
-            doc.text(`Généré le : ${new Date().toLocaleDateString('fr-FR')}`, 20, 72);
+            doc.setFont('helvetica', 'bold');
+            doc.text(total.toString(), 45, y + 12, { align: 'center' });
+            doc.text(highRisk.toString(), 100, y + 12, { align: 'center' });
+            doc.text(compliant.toString(), 155, y + 12, { align: 'center' });
             
-            const items = [
-                { art: 'Article 9', title: 'Risk Management', desc: 'Système de gestion des risques tout au long du cycle de vie' },
-                { art: 'Article 10', title: 'Data Governance', desc: 'Qualité et absence de biais des datasets' },
-                { art: 'Article 11', title: 'Technical Documentation', desc: 'Documentation conforme Annexe IV' },
-                { art: 'Article 12', title: 'Record-Keeping', desc: 'Conservation des logs' },
-                { art: 'Article 13', title: 'Transparency', desc: 'Transparence pour interprétation des résultats' },
-                { art: 'Article 14', title: 'Human Oversight', desc: 'Supervision humaine effective' },
-                { art: 'Article 15', title: 'Accuracy & Security', desc: 'Exactitude et sécurité' },
-                { art: 'Article 20', title: 'Conformity Assessment', desc: 'Évaluation avant déploiement' }
+            doc.setTextColor(100);
+            doc.setFontSize(8);
+            doc.setFont('helvetica', 'normal');
+            doc.text('Total modèles', 45, y + 20, { align: 'center' });
+            doc.text('High-Risk', 100, y + 20, { align: 'center' });
+            doc.text('Conformes', 155, y + 20, { align: 'center' });
+            
+            // Détail des modèles
+            y += 45;
+            doc.setTextColor(0, 8, 135);
+            doc.setFontSize(14);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Détail des systèmes d\'IA inventoriés', 20, y);
+            
+            y += 10;
+            models.forEach((model, index) => {
+                if (y > 260) {
+                    doc.addPage();
+                    y = 20;
+                }
+                
+                const statusColor = model.isHighRisk ? [239, 68, 68] : [16, 185, 129];
+                const statusText = model.isHighRisk ? 'HIGH-RISK' : 'CONFORME';
+                
+                doc.setFillColor(statusColor[0], statusColor[1], statusColor[2]);
+                doc.rect(20, y, 3, 25, 'F');
+                
+                doc.setTextColor(0, 8, 135);
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'bold');
+                doc.text(`${index + 1}. ${model.name}`, 28, y + 6);
+                
+                doc.setTextColor(100);
+                doc.setFontSize(9);
+                doc.setFont('helvetica', 'normal');
+                doc.text(`Type : ${model.typeLabel}`, 28, y + 12);
+                doc.text(`Usage : ${model.usageLabel}`, 28, y + 17);
+                doc.text(`Date : ${formatDate(model.date)}`, 28, y + 22);
+                
+                doc.setTextColor(statusColor[0], statusColor[1], statusColor[2]);
+                doc.setFontSize(8);
+                doc.setFont('helvetica', 'bold');
+                doc.text(statusText, pageWidth - 30, y + 6, { align: 'right' });
+                
+                y += 32;
+            });
+            
+            // Footer
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                doc.setPage(i);
+                doc.setTextColor(150);
+                doc.setFontSize(8);
+                doc.setFont('helvetica', 'normal');
+                doc.text(`Document confidentiel - ${userData.company} - Page ${i}/${pageCount}`, pageWidth / 2, 290, { align: 'center' });
+                doc.text('© 2026 Homieux Media - Suite EU AI Act pour Banques', pageWidth / 2, 295, { align: 'center' });
+            }
+            
+            doc.save(`rapport-conformite-eu-ai-act-${userData.company.replace(/\s+/g, '-').toLowerCase()}-${new Date().toISOString().split('T')[0]}.pdf`);
+        }
+
+        function generateChecklistPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const pageWidth = doc.internal.pageSize.getWidth();
+            
+            // Header
+            doc.setFillColor(0, 8, 135);
+            doc.rect(0, 0, pageWidth, 30, 'F');
+            
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(18);
+            doc.setFont('helvetica', 'bold');
+            doc.text('HOMIEUX MEDIA', 20, 18);
+            
+            // Titre
+            doc.setTextColor(0, 8, 135);
+            doc.setFontSize(16);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Checklist de Conformité EU AI Act', 20, 45);
+            
+            doc.setTextColor(100);
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'normal');
+            doc.text(`Pour : ${userData.company} - ${userData.position}`, 20, 55);
+            doc.text(`Date : ${new Date().toLocaleDateString('fr-FR')}`, 20, 62);
+            
+            const checklistItems = [
+                { art: 'Article 9', title: 'Système de Risk Management', desc: 'Mise en place d\'un système de gestion des risques tout au long du cycle de vie' },
+                { art: 'Article 10', title: 'Data Governance', desc: 'Qualité, représentativité et absence de biais des jeux de données' },
+                { art: 'Article 11', title: 'Documentation Technique', desc: 'Documentation complète conforme à l\'Annexe IV' },
+                { art: 'Article 12', title: 'Record-Keeping', desc: 'Enregistrement et conservation des logs opérationnels' },
+                { art: 'Article 13', title: 'Transparence', desc: 'Transparence suffisante pour l\'interprétation des résultats' },
+                { art: 'Article 14', title: 'Supervision Humaine', desc: 'Supervision humaine effective et possibilité d\'intervention' },
+                { art: 'Article 15', title: 'Exactitude et Sécurité', desc: 'Exactitude, robustesse et sécurité du système' },
+                { art: 'Article 20', title: 'Évaluation de Conformité', desc: 'Évaluation réalisée avant déploiement' }
             ];
             
-            let y = 85;
-            items.forEach((item, i) => {
+            let y = 75;
+            checklistItems.forEach((item, index) => {
                 if (y > 270) {
                     doc.addPage();
                     y = 20;
                 }
                 
-                doc.setFontSize(11);
-                doc.setTextColor(0);
-                doc.text(`[ ] ${item.title}`, 20, y);
-                y += 6;
+                // Checkbox vide
+                doc.setDrawColor(0, 8, 135);
+                doc.setLineWidth(0.5);
+                doc.rect(20, y, 5, 5);
                 
-                doc.setFontSize(9);
+                doc.setTextColor(0, 8, 135);
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'bold');
+                doc.text(`${item.title} (${item.art})`, 32, y + 4);
+                
                 doc.setTextColor(80);
-                doc.text(`${item.art} - ${item.desc}`, 25, y);
-                y += 12;
+                doc.setFontSize(8);
+                doc.setFont('helvetica', 'normal');
+                doc.text(item.desc, 32, y + 10);
+                
+                y += 22;
             });
             
+            // Date limite
+            y += 5;
+            doc.setFillColor(254, 243, 199);
+            doc.rect(20, y, pageWidth - 40, 15, 'F');
+            doc.setTextColor(146, 64, 14);
             doc.setFontSize(9);
-            doc.setTextColor(150);
-            doc.text('Homieux Media - Conformité EU AI Act pour institutions financières', 20, 285);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Date limite de conformité : 2 août 2026', 25, y + 6);
+            doc.setFont('helvetica', 'normal');
+            doc.text('Sanctions : jusqu\'à 15M€ ou 3% du CA mondial', 25, y + 12);
             
-            doc.save(`checklist-conformite-${userData.companyName.replace(/\s+/g, '-')}.pdf`);
+            // Footer
+            doc.setTextColor(150);
+            doc.setFontSize(8);
+            doc.setFont('helvetica', 'normal');
+            doc.text('© 2026 Homieux Media - Tous droits réservés', pageWidth / 2, 290, { align: 'center' });
+            
+            doc.save(`checklist-conformite-eu-ai-act-${new Date().toISOString().split('T')[0]}.pdf`);
         }
-        
+
+        // Soumission vers Google Forms
+        function submitToTracking() {
+            const total = models.length;
+            const highRisk = models.filter(m => m.isHighRisk).length;
+            
+            // Préparer les données
+            const formData = new FormData();
+            formData.append(GOOGLE_FORM_CONFIG.entryIds.company, userData.company);
+            formData.append(GOOGLE_FORM_CONFIG.entryIds.position, userData.position);
+            formData.append(GOOGLE_FORM_CONFIG.entryIds.timestamp, new Date().toISOString());
+            formData.append(GOOGLE_FORM_CONFIG.entryIds.totalModels, total);
+            formData.append(GOOGLE_FORM_CONFIG.entryIds.highRiskCount, highRisk);
+            formData.append(GOOGLE_FORM_CONFIG.entryIds.jsonData, JSON.stringify({
+                user: userData,
+                models: models,
+                summary: { total, highRisk, compliant: total - highRisk }
+            }));
+            
+            // Envoyer vers Google Forms
+            const formUrl = `https://docs.google.com/forms/d/e/${GOOGLE_FORM_CONFIG.formId}/formResponse`;
+            
+            fetch(formUrl, {
+                method: 'POST',
+                body: formData,
+                mode: 'no-cors'
+            }).then(() => {
+                alert('✅ Données envoyées avec succès !\n\nVos résultats ont été enregistrés dans Google Sheets.');
+            }).catch((error) => {
+                console.error('Erreur:', error);
+                alert('❌ Erreur lors de l\'envoi. Vérifiez la configuration Google Forms dans le code.\n\nErreur technique : ' + error.message);
+            });
+        }
+
         // Utilitaires
-        function formatDate(dateString) {
-            return new Date(dateString).toLocaleDateString('fr-FR');
-        }
-        
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'Non spécifiée';
+            return new Date(dateString).toLocaleDateString('fr-FR');
         }
     </script>
 </body>
