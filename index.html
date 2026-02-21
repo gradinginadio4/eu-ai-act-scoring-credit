@@ -616,28 +616,6 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-        
-        .airtable-status {
-            margin-top: 16px;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 14px;
-            display: none;
-        }
-        
-        .airtable-status.success {
-            display: block;
-            background: #d1fae5;
-            color: #065f46;
-            border: 1px solid #10b981;
-        }
-        
-        .airtable-status.error {
-            display: block;
-            background: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #ef4444;
-        }
     </style>
 </head>
 <body>
@@ -899,16 +877,6 @@
                             ✅ Checklist Articles 9-20
                         </button>
                     </div>
-                    
-                    <div style="margin-top: 24px; text-align: center;">
-                        <button class="btn btn-secondary" onclick="submitToAirtable()" style="width: auto; padding: 12px 24px; font-size: 14px;">
-                            💾 Sauvegarder dans Airtable
-                        </button>
-                        <p style="font-size: 12px; color: var(--text-light); margin-top: 8px;">
-                            Les données seront envoyées vers votre base Airtable (forfait gratuit)
-                        </p>
-                        <div id="airtableStatus" class="airtable-status"></div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -933,24 +901,7 @@
     </footer>
 
     <script>
-        // ==========================================
-        // CONFIGURATION AIRTABLE - À MODIFIER
-        // ==========================================
-        const AIRTABLE_CONFIG = {
-            // Votre Personal Access Token (voir tutoriel étape 3)
-            personalAccessToken: 'patz8jl3SU1r0jVPJ.c9afa2e09297f51c0d336080cbdaafac4b5e5983df6c9ef4bbf888abe1f22183',
-            
-            // ID de votre Base (commence par 'app')
-            baseId: 'apphdakdKRB8f0MnH',
-            
-            // Nom de votre Table (ex: 'Inventaire', 'Soumissions', etc.)
-            tableName: 'Inventaire EU AI Act',
-            
-            // Pour le forfait gratuit : max 5 requêtes/seconde, 1000 appels/mois
-            // La limite de 1200 enregistrements/base est largement suffisante
-        };
-
-        // Stockage local des données
+        // Stockage local des données uniquement - aucune API externe
         let currentStep = 1;
         let userData = {
             company: '',
@@ -1474,107 +1425,6 @@
             
             doc.save(`checklist-conformite-eu-ai-act-${new Date().toISOString().split('T')[0]}.pdf`);
         }
-
-        // Soumission vers Airtable - VERSION API OFFICIELLE
-        async function submitToAirtable() {
-    const statusEl = document.getElementById('airtableStatus');
-    statusEl.className = 'airtable-status';
-    statusEl.textContent = 'Envoi en cours...';
-    statusEl.style.display = 'block';
-    
-    // Vérifier la configuration
-    if (AIRTABLE_CONFIG.personalAccessToken.includes('XXXXXXXX')) {
-        statusEl.className = 'airtable-status error';
-        statusEl.innerHTML = '❌ Configuration incomplète.<br>Veuillez suivre le tutoriel pour configurer votre Personal Access Token.';
-        return;
-    }
-    
-    const total = models.length;
-    const highRisk = models.filter(m => m.isHighRisk).length;
-    
-    // Préparer les données pour Airtable
-    const records = models.map(model => ({
-        fields: {
-            'Nom Entreprise': userData.company,
-            'Poste': userData.position,
-            'Date Soumission': new Date().toISOString(),
-            'Nom Modèle': model.name,
-            'Type Technologie': model.typeLabel,
-            'Usage Principal': model.usageLabel,
-            'Date Mise en Prod': model.date,
-            'Décision Automatisée': model.automated,
-            'Données Sensibles': model.personalData,
-            'Profiling': model.profiling,
-            'Fournisseur Tiers': model.thirdParty,
-            'Classification': model.isHighRisk ? 'High-Risk' : 'Conforme',
-            'Notes': model.notes || '',
-            'JSON Complet': JSON.stringify({
-                user: userData,
-                model: model,
-                summary: { total, highRisk, compliant: total - highRisk }
-            })
-        }
-    }));
-    
-    try {
-        // NOUVEAU : Utiliser l'API de création de records avec le nom de table encodé
-        // Pour les tables avec espaces, on encode l'URL
-        const tableNameEncoded = encodeURIComponent(AIRTABLE_CONFIG.tableName);
-        
-        // Envoi un par un pour respecter la limite de 5 req/sec du forfait gratuit
-        for (let i = 0; i < records.length; i++) {
-            console.log(`Envoi record ${i+1}/${records.length}...`);
-            
-            const response = await fetch(`https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${tableNameEncoded}`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${AIRTABLE_CONFIG.personalAccessToken}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ records: [records[i]] })
-            });
-            
-            // DEBUG : Afficher la réponse dans la console
-            const responseData = await response.json();
-            console.log('Réponse Airtable:', responseData);
-            
-            if (!response.ok) {
-                throw new Error(responseData.error?.message || `Erreur HTTP ${response.status}`);
-            }
-            
-            // Respecter la limite de 5 requêtes par seconde (attendre 200ms entre chaque)
-            if (i < records.length - 1) {
-                await new Promise(resolve => setTimeout(resolve, 200));
-            }
-        }
-        
-        statusEl.className = 'airtable-status success';
-        statusEl.innerHTML = `✅ Succès !<br>${records.length} enregistrement(s) sauvegardé(s) dans Airtable.<br>Vérifiez votre base de données.`;
-        
-    } catch (error) {
-        console.error('Erreur Airtable complète:', error);
-        statusEl.className = 'airtable-status error';
-        
-        // Messages d'erreur spécifiques
-        if (error.message.includes('INVALID_PERMISSIONS_OR_MODEL_NOT_FOUND')) {
-            statusEl.innerHTML = `
-                ❌ Erreur de permissions.<br><br>
-                <strong>Solutions :</strong><br>
-                1. Vérifiez que votre token a les scopes : data.records:write, data.records:read, schema.bases:read<br>
-                2. Vérifiez que la base "${AIRTABLE_CONFIG.baseId}" est bien ajoutée aux ressources du token<br>
-                3. Vérifiez que le nom de la table "${AIRTABLE_CONFIG.tableName}" existe exactement (majuscules !)<br>
-                4. Essayez avec l'ID de table (tblXXX) au lieu du nom<br><br>
-                <a href="https://airtable.com/create/tokens" target="_blank">Modifier mon token →</a>
-            `;
-        } else if (error.message.includes('404')) {
-            statusEl.innerHTML = `❌ Base ou Table introuvable.<br>Vérifiez le Base ID et le nom de la table.`;
-        } else if (error.message.includes('429')) {
-            statusEl.innerHTML = `⚠️ Trop de requêtes. Attendez 30 secondes.`;
-        } else {
-            statusEl.innerHTML = `❌ Erreur : ${error.message}<br>Regardez la console (F12) pour les détails.`;
-        }
-    }
-}
 
         // Utilitaires
         function escapeHtml(text) {
