@@ -1455,38 +1455,49 @@
             doc.save(`checklist-conformite-eu-ai-act-${new Date().toISOString().split('T')[0]}.pdf`);
         }
 
-        // Soumission vers Google Forms
-        function submitToTracking() {
-            const total = models.length;
-            const highRisk = models.filter(m => m.isHighRisk).length;
-            
-            // Préparer les données
-            const formData = new FormData();
-            formData.append(GOOGLE_FORM_CONFIG.entryIds.company, userData.company);
-            formData.append(GOOGLE_FORM_CONFIG.entryIds.position, userData.position);
-            formData.append(GOOGLE_FORM_CONFIG.entryIds.timestamp, new Date().toISOString());
-            formData.append(GOOGLE_FORM_CONFIG.entryIds.totalModels, total);
-            formData.append(GOOGLE_FORM_CONFIG.entryIds.highRiskCount, highRisk);
-            formData.append(GOOGLE_FORM_CONFIG.entryIds.jsonData, JSON.stringify({
-                user: userData,
-                models: models,
-                summary: { total, highRisk, compliant: total - highRisk }
-            }));
-            
-            // Envoyer vers Google Forms
-            const formUrl = `https://docs.google.com/forms/d/e/${GOOGLE_FORM_CONFIG.formId}/formResponse`;
-            
-            fetch(formUrl, {
-                method: 'POST',
-                body: formData,
-                mode: 'no-cors'
-            }).then(() => {
-                alert('✅ Données envoyées avec succès !\n\nVos résultats ont été enregistrés dans Google Sheets.');
-            }).catch((error) => {
-                console.error('Erreur:', error);
-                alert('❌ Erreur lors de l\'envoi. Vérifiez la configuration Google Forms dans le code.\n\nErreur technique : ' + error.message);
-            });
-        }
+        // Soumission vers Google Forms - VERSION CORRIGÉE
+function submitToTracking() {
+    const total = models.length;
+    const highRisk = models.filter(m => m.isHighRisk).length;
+    
+    console.log('Envoi des données...'); // Debug
+    console.log('Form ID:', GOOGLE_FORM_CONFIG.formId);
+    console.log('Entry IDs:', GOOGLE_FORM_CONFIG.entryIds);
+    
+    // Construire l'URL SANS espace parasite
+    const formUrl = `https://docs.google.com/forms/d/e/${GOOGLE_FORM_CONFIG.formId}/formResponse`;
+    
+    console.log('URL complète:', formUrl); // Debug - vérifie dans la console (F12)
+    
+    // Préparer les données avec URLSearchParams (plus fiable que FormData)
+    const params = new URLSearchParams();
+    params.append(GOOGLE_FORM_CONFIG.entryIds.company, userData.company);
+    params.append(GOOGLE_FORM_CONFIG.entryIds.position, userData.position);
+    params.append(GOOGLE_FORM_CONFIG.entryIds.timestamp, new Date().toLocaleString('fr-FR'));
+    params.append(GOOGLE_FORM_CONFIG.entryIds.totalModels, total);
+    params.append(GOOGLE_FORM_CONFIG.entryIds.highRiskCount, highRisk);
+    params.append(GOOGLE_FORM_CONFIG.entryIds.jsonData, JSON.stringify({
+        user: userData,
+        models: models,
+        summary: { total, highRisk, compliant: total - highRisk }
+    }, null, 2));
+    
+    // Envoyer avec mode no-cors (obligatoire pour Google Forms)
+    fetch(formUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: params.toString(),
+        mode: 'no-cors'
+    }).then(() => {
+        console.log('Succès !');
+        alert('✅ Données envoyées avec succès !\n\nVérifiez votre Google Forms dans quelques secondes.');
+    }).catch((error) => {
+        console.error('Erreur:', error);
+        alert('❌ Erreur réseau. Détails dans la console (F12).');
+    });
+}
 
         // Utilitaires
         function escapeHtml(text) {
