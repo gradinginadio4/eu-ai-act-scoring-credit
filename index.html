@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Application EU AI Act - Inventaire et conformité scoring crédit high-risk. Outil RegTech pour banques.">
+    <title>Scoring Crédit High-Risk | Conformité EU AI Act</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --primary: #000887;
+            --accent: #ED51C2;
+            --background: #FFFFFF;
+            --text: #1a1a1a;
+            --text-light: #666666;
+            --border: #e5e5e5;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Epilogue', sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        header {
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border);
+            background: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            height: 40px;
+        }
+        
+        .discovery-btn {
+            background: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        
+        .discovery-btn:hover {
+            background: var(--accent);
+        }
+        
+        main {
+            padding: 40px 0;
+        }
+        
+        h1 {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+        
+        .app-subtitle {
+            color: var(--text-light);
+            margin-bottom: 32px;
+            font-size: 16px;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .panel {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+        }
+        
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .panel-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .panel-badge {
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 6px;
+            color: var(--text);
+        }
+        
+        input[type="text"],
+        input[type="date"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-family: 'Epilogue', sans-serif;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+        
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 8px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            margin-top: 3px;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+        }
+        
+        .checkbox-item label {
+            font-weight: 400;
+            font-size: 13px;
+            margin: 0;
+            cursor: pointer;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-family: 'Epilogue', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--accent);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            opacity: 0.9;
+        }
+        
+        .model-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .model-item {
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .model-item:hover {
+            border-color: var(--primary);
+        }
+        
+        .model-item.selected {
+            border-color: var(--primary);
+            background: rgba(0, 8, 135, 0.03);
+        }
+        
+        .model-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .model-name {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .model-status {
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-high-risk {
+            background: #fee2e2;
+            color: var(--danger);
+        }
+        
+        .status-compliant {
+            background: #d1fae5;
+            color: var(--success);
+        }
+        
+        .status-pending {
+            background: #fef3c7;
+            color: var(--warning);
+        }
+        
+        .model-meta {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+        
+        .checklist {
+            list-style: none;
+        }
+        
+        .checklist-item {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        
+        .checklist-item:last-child {
+            border-bottom: none;
+        }
+        
+        .checklist-checkbox {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary);
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+        
+        .checklist-content {
+            flex: 1;
+        }
+        
+        .checklist-title {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        
+        .checklist-desc {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+        
+        .progress-section {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 16px;
+            background: rgba(0, 8, 135, 0.03);
+            border-radius: 8px;
+        }
+        
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+            color: var(--text-light);
+        }
+        
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        
+        footer {
+            background: var(--primary);
+            color: white;
+            padding: 48px 0 24px;
+            margin-top: 80px;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .footer-logo {
+            height: 40px;
+            opacity: 0.9;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 32px;
+        }
+        
+        .footer-links a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 24px;
+            text-align: center;
+            color: rgba(255,255,255,0.6);
+            font-size: 14px;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .mt-4 {
+            margin-top: 16px;
+        }
+        
+        .flex {
+            display: flex;
+        }
+        
+        .gap-2 {
+            gap: 8px;
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 60px 0 40px;
+        }
+        
+        .hero h1 {
+            font-size: 42px;
+            margin-bottom: 16px;
+        }
+        
+        .hero p {
+            font-size: 18px;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .alert {
+            background: #fef3c7;
+            border: 1px solid var(--warning);
+            color: #92400e;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+        
+        .alert strong {
+            color: #78350f;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="https://homieuxmedia.com" target="_blank" rel="noopener">
+                    <img src="https://via.placeholder.com/150x40/000887/FFFFFF?text=HOMIEUX" alt="Homieux Media Logo" class="logo">
+                </a>
+                <a href="https://cal.com/homieux-media/discovery-call-gratuit-discutons-de-vos-defis" target="_blank" rel="noopener" class="discovery-btn">
+                    Appel Découverte 15min
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="hero">
+                <h1>Scoring Crédit High-Risk</h1>
+                <p>Conformité EU AI Act Article 6 & Annexe III - Inventairez vos modèles, évaluez leur classification high-risk et générez des rapports de conformité.</p>
+            </div>
+
+            <div class="alert">
+                <strong>Obligation légale :</strong> Les systèmes d'évaluation automatisée du crédit sont classés high-risk par l'Annexe III point 5(b) de l'EU AI Act. Date limite de conformité : 2 août 2026.
+            </div>
+
+            <div class="dashboard">
+                <div class="panel">
+                    <div class="panel-header">
+                        <span class="panel-title">Ajouter un Modèle</span>
+                        <span class="panel-badge">Article 6</span>
+                    </div>
+                    
+                    <form id="modelForm">
+                        <div class="form-group">
+                            <label for="modelName">Nom du modèle / système</label>
+                            <input type="text" id="modelName" placeholder="Ex: Scoring Consommation V3" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="modelType">Type de technologie</label>
+                            <select id="modelType" required>
+                                <option value="">Sélectionner...</option>
+                                <option value="ml">Machine Learning (ML)</option>
+                                <option value="dl">Deep Learning / Neural Networks</option>
+                                <option value="rules">Règles métier automatisées</option>
+                                <option value="hybrid">Système hybride</option>
+                                <option value="genai">IA Générative (LLM)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="modelUsage">Usage principal</label>
+                            <select id="modelUsage" required>
+                                <option value="">Sélectionner...</option>
+                                <option value="credit_scoring">Évaluation risque crédit (personnes physiques)</option>
+                                <option value="credit_scoring_moral">Évaluation risque crédit (personnes morales)</option>
+                                <option value="fraud_detection">Détection fraude</option>
+                                <option value="pricing">Pricing / Tarification</option>
+                                <option value="collection">Recouvrement</option>
+                                <option value="other">Autre</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="modelDate">Date de mise en production</label>
+                            <input type="date" id="modelDate" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Caractéristiques du système (cochez si applicable)</label>
+                            <div class="checkbox-group">
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="automatedDecision" value="true">
+                                    <label for="automatedDecision">Décision entièrement automatisée (sans humain)</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="personalData" value="true">
+                                    <label for="personalData">Traite des données personnelles sensibles</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="profiling" value="true">
+                                    <label for="profiling">Profiling systématique des clients</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="thirdParty" value="true">
+                                    <label for="thirdParty">Fourni par un tiers (SaaS/cloud)</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="modelNotes">Notes / Contexte</label>
+                            <textarea id="modelNotes" placeholder="Détails sur le modèle, fournisseur, documentation existante..."></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <span>+</span> Ajouter au registre
+                        </button>
+                    </form>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <span class="panel-title">Registre des Modèles</span>
+                        <span class="panel-badge" id="modelCount">0 modèle</span>
+                    </div>
+                    
+                    <div class="stats-grid" id="statsGrid" style="display: none;">
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalModels">0</div>
+                            <div class="stat-label">Total Modèles</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="highRiskModels" style="color: var(--danger);">0</div>
+                            <div class="stat-label">High-Risk</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="compliantModels" style="color: var(--success);">0</div>
+                            <div class="stat-label">Conformes</div>
+                        </div>
+                    </div>
+                    
+                    <div class="model-list" id="modelList">
+                        <div class="empty-state">
+                            <div class="empty-icon">📋</div>
+                            <p>Aucun modèle enregistré</p>
+                            <p style="font-size: 13px; margin-top: 8px;">Ajoutez votre premier modèle de scoring pour commencer l'inventaire EU AI Act</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 flex gap-2" id="actionButtons" style="display: none;">
+                        <button class="btn btn-secondary" onclick="generatePDF()">
+                            📄 Rapport PDF
+                        </button>
+                        <button class="btn btn-success" onclick="showChecklist()">
+                            ✅ Checklist Conformité
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel hidden" id="checklistPanel">
+                <div class="panel-header">
+                    <span class="panel-title">Checklist Conformité EU AI Act</span>
+                    <span class="panel-badge">Annexe III - Art. 6</span>
+                </div>
+                
+                <ul class="checklist" id="complianceChecklist">
+                    <li class="checklist-item">
+                        <input type="checkbox" class="checklist-checkbox" id="chk1">
+                        <div class="checklist-content">
+                            <div class="checklist-title">Système de Risk Management (Article 9)</div>
+                            <div class="checklist-desc">Mise en place d'un système de gestion des risques tout au long du cycle de vie du système d'IA</div>
+                        </div>
+                    </li>
+                    <li class="checklist-item">
+                        <input type="checkbox" class="checklist-checkbox" id="chk2">
+                        <div class="checklist-content">
+                            <div class="checklist-title">Data Governance (Article 10)</div>
+                            <div class="checklist-desc">Qualité, représentativité et absence de biais dans les datasets de formation, validation et test</div>
+                        </div>
+                    </li>
+                    <li class="checklist-item">
+                        <input type="checkbox" class="checklist-checkbox" id="chk3">
+                        <div class="checklist-content">
+                            <div class="checklist-title">Technical Documentation (Article 11)</div>
+                            <div class="checklist-desc">Documentation complète décrivant le système, ses capacités et limites, conforme Annexe IV</div>
+                        </div>
+                    </li>
+                    <li class="checklist-item">
+                        <input type="checkbox" class="checklist-checkbox" id="chk4">
+                        <div class="checklist-content">
+                            <div class="checklist-title">Record-Keeping (Article 12)</div>
+                            <div class="checklist-desc">Capacité à enregistrer et conserver les logs des événements tout au long du cycle de vie</div>
+                        </div>
+                    </li>
+                    <li class="checklist-item">
+                        <input type="checkbox" class="checklist-checkbox" id="chk5">
+                        <div class="checklist-content">
+                            <div class="checklist-title">Transparency & Provision (Article 13)</div>
+                            <div class="checklist-desc">Le système est conçu pour être suffisamment transparent pour permettre l'interprétation des résultats</div>
+                        </div>
+                    </li>
+                    <li class="checklist-item">
+                        <input type="checkbox" class="checklist-checkbox" id="chk6">
+                        <div class="checklist-content">
+                            <div class="checklist-title">Human Oversight (Article 14)</div>
+                            <div class="checklist-desc">Mesures de supervision humaine effective, y compris possibilité d'intervention et d'override</div>
+                        </div>
+                    </li>
+                    <li class="checklist-item">
+                        <input type="checkbox" class="checklist-checkbox" id="chk7">
+                        <div class="checklist-content">
+                            <div class="checklist-title">Accuracy, Robustness, Cybersecurity (Article 15)</div>
+                            <div class="checklist-desc">Mesures pour assurer exactitude, robustesse et sécurité du système</div>
+                        </div>
+                    </li>
+                    <li class="checklist-item">
+                        <input type="checkbox" class="checklist-checkbox" id="chk8">
+                        <div class="checklist-content">
+                            <div class="checklist-title">Conformity Assessment (Article 20)</div>
+                            <div class="checklist-desc">Évaluation de conformité réalisée avant déploiement (notified body ou auto-évaluation)</div>
+                        </div>
+                    </li>
+                </ul>
+                
+                <div class="progress-section">
+                    <div class="progress-header">
+                        <span>Progression conformité</span>
+                        <span id="progressPercent">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <button class="btn btn-primary" onclick="generateChecklistPDF()">
+                        📄 Exporter Checklist PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <a href="https://homieuxmedia.com" target="_blank" rel="noopener">
+                    <img src="https://via.placeholder.com/150x40/000887/FFFFFF?text=HOMIEUX" alt="Homieux Media" class="footer-logo">
+                </a>
+                <div class="footer-links">
+                    <a href="https://www.homieuxmedia.com/politique-de-confidentialite" target="_blank" rel="noopener">Privacy Policy</a>
+                    <a href="https://www.homieuxmedia.com/conditions-dutilisation" target="_blank" rel="noopener">Terms of Use</a>
+                    <a href="https://cal.com/homieux-media/discovery-call-gratuit-discutons-de-vos-defis" target="_blank" rel="noopener">Appel Découverte 15min</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                © 2026 Homieux Media. Outil de conformité EU AI Act pour institutions financières. Aucune donnée n'est stockée sur nos serveurs.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let models = JSON.parse(localStorage.getItem('scoringModels') || '[]');
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            renderModels();
+            updateStats();
+            
+            document.getElementById('modelForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addModel();
+            });
+            
+            document.querySelectorAll('.checklist-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', updateProgress);
+            });
+        });
+        
+        function addModel() {
+            const model = {
+                id: Date.now(),
+                name: document.getElementById('modelName').value,
+                type: document.getElementById('modelType').value,
+                typeLabel: document.getElementById('modelType').options[document.getElementById('modelType').selectedIndex].text,
+                usage: document.getElementById('modelUsage').value,
+                usageLabel: document.getElementById('modelUsage').options[document.getElementById('modelUsage').selectedIndex].text,
+                date: document.getElementById('modelDate').value,
+                automated: document.getElementById('automatedDecision').checked,
+                personalData: document.getElementById('personalData').checked,
+                profiling: document.getElementById('profiling').checked,
+                thirdParty: document.getElementById('thirdParty').checked,
+                notes: document.getElementById('modelNotes').value,
+                addedAt: new Date().toISOString()
+            };
+            
+            model.isHighRisk = isHighRisk(model);
+            model.status = model.isHighRisk ? 'high-risk' : 'pending';
+            
+            models.push(model);
+            localStorage.setItem('scoringModels', JSON.stringify(models));
+            
+            renderModels();
+            updateStats();
+            document.getElementById('modelForm').reset();
+        }
+        
+        function isHighRisk(model) {
+            if (model.usage === 'credit_scoring') return true;
+            if ((model.type === 'dl' || model.type === 'genai') && model.automated) return true;
+            return false;
+        }
+        
+        function renderModels() {
+            const container = document.getElementById('modelList');
+            
+            if (models.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📋</div>
+                        <p>Aucun modèle enregistré</p>
+                        <p style="font-size: 13px; margin-top: 8px;">Ajoutez votre premier modèle de scoring pour commencer l'inventaire EU AI Act</p>
+                    </div>
+                `;
+                document.getElementById('actionButtons').style.display = 'none';
+                document.getElementById('statsGrid').style.display = 'none';
+                return;
+            }
+            
+            document.getElementById('actionButtons').style.display = 'flex';
+            document.getElementById('statsGrid').style.display = 'grid';
+            
+            container.innerHTML = models.map(model => `
+                <div class="model-item" data-id="${model.id}">
+                    <div class="model-header">
+                        <span class="model-name">${escapeHtml(model.name)}</span>
+                        <span class="model-status status-${model.status}">${getStatusLabel(model.status)}</span>
+                    </div>
+                    <div class="model-meta">
+                        ${model.typeLabel} • ${model.usageLabel} • ${formatDate(model.date)}
+                        ${model.automated ? ' • Automatisé' : ''}
+                        ${model.thirdParty ? ' • Fournisseur tiers' : ''}
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('modelCount').textContent = `${models.length} modèle${models.length > 1 ? 's' : ''}`;
+        }
+        
+        function updateStats() {
+            const total = models.length;
+            const highRisk = models.filter(m => m.status === 'high-risk').length;
+            const compliant = models.filter(m => m.status === 'compliant').length;
+            
+            document.getElementById('totalModels').textContent = total;
+            document.getElementById('highRiskModels').textContent = highRisk;
+            document.getElementById('compliantModels').textContent = compliant;
+        }
+        
+        function getStatusLabel(status) {
+            const labels = {
+                'high-risk': 'High-Risk',
+                'compliant': 'Conforme',
+                'pending': 'À évaluer'
+            };
+            return labels[status] || status;
+        }
+        
+        function formatDate(dateString) {
+            return new Date(dateString).toLocaleDateString('fr-FR');
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function showChecklist() {
+            document.getElementById('checklistPanel').classList.remove('hidden');
+            document.getElementById('checklistPanel').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function updateProgress() {
+            const checkboxes = document.querySelectorAll('.checklist-checkbox');
+            const checked = document.querySelectorAll('.checklist-checkbox:checked');
+            const percent = Math.round((checked.length / checkboxes.length) * 100);
+            
+            document.getElementById('progressPercent').textContent = `${percent}%`;
+            document.getElementById('progressBar').style.width = `${percent}%`;
+        }
+        
+        function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.setFontSize(20);
+            doc.setTextColor(0, 8, 135);
+            doc.text('Rapport de Conformité EU AI Act', 20, 30);
+            
+            doc.setFontSize(12);
+            doc.setTextColor(100);
+            doc.text('Scoring Crédit High-Risk - Inventaire des Modèles', 20, 40);
+            doc.text(`Généré le: ${new Date().toLocaleDateString('fr-FR')}`, 20, 48);
+            
+            doc.setFontSize(14);
+            doc.setTextColor(0, 8, 135);
+            doc.text('Résumé', 20, 65);
+            
+            doc.setFontSize(11);
+            doc.setTextColor(50);
+            doc.text(`Total modèles inventoriés: ${models.length}`, 20, 75);
+            doc.text(`Modèles classés High-Risk (Annexe III): ${models.filter(m => m.status === 'high-risk').length}`, 20, 82);
+            doc.text(`Modèles conformes: ${models.filter(m => m.status === 'compliant').length}`, 20, 89);
+            
+            let y = 105;
+            doc.setFontSize(14);
+            doc.setTextColor(0, 8, 135);
+            doc.text('Détail des Modèles', 20, y);
+            y += 10;
+            
+            models.forEach((model, index) => {
+                if (y > 270) {
+                    doc.addPage();
+                    y = 20;
+                }
+                
+                doc.setFontSize(11);
+                doc.setTextColor(0);
+                doc.text(`${index + 1}. ${model.name}`, 20, y);
+                y += 7;
+                
+                doc.setFontSize(10);
+                doc.setTextColor(80);
+                doc.text(`Type: ${model.typeLabel}`, 25, y);
+                y += 5;
+                doc.text(`Usage: ${model.usageLabel}`, 25, y);
+                y += 5;
+                doc.text(`Statut: ${getStatusLabel(model.status)}`, 25, y);
+                y += 5;
+                doc.text(`Mise en production: ${formatDate(model.date)}`, 25, y);
+                y += 10;
+            });
+            
+            doc.setFontSize(9);
+            doc.setTextColor(150);
+            doc.text('Document généré par Homieux Media - Suite EU AI Act pour Banques', 20, 285);
+            doc.text('https://homieuxmedia.com', 20, 290);
+            
+            doc.save(`rapport-conformite-eu-ai-act-${new Date().toISOString().split('T')[0]}.pdf`);
+        }
+        
+        function generateChecklistPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.setFontSize(20);
+            doc.setTextColor(0, 8, 135);
+            doc.text('Checklist Conformité EU AI Act', 20, 30);
+            
+            doc.setFontSize(12);
+            doc.setTextColor(100);
+            doc.text('Obligations pour Systèmes High-Risk - Article 6 & Annexe III', 20, 40);
+            
+            const checklistItems = [
+                { art: 'Article 9', title: 'Risk Management', desc: 'Système de gestion des risques tout au long du cycle de vie' },
+                { art: 'Article 10', title: 'Data Governance', desc: 'Qualité, représentativité et absence de biais des datasets' },
+                { art: 'Article 11', title: 'Technical Documentation', desc: 'Documentation complète conforme Annexe IV' },
+                { art: 'Article 12', title: 'Record-Keeping', desc: 'Enregistrement et conservation des logs' },
+                { art: 'Article 13', title: 'Transparency', desc: 'Transparence suffisante pour interprétation des résultats' },
+                { art: 'Article 14', title: 'Human Oversight', desc: 'Supervision humaine effective et possibilité d\'intervention' },
+                { art: 'Article 15', title: 'Accuracy & Security', desc: 'Exactitude, robustesse et sécurité du système' },
+                { art: 'Article 20', title: 'Conformity Assessment', desc: 'Évaluation de conformité avant déploiement' }
+            ];
+            
+            let y = 60;
+            checklistItems.forEach((item, index) => {
+                const checkbox = document.getElementById(`chk${index + 1}`);
+                const checked = checkbox && checkbox.checked ? '[X]' : '[ ]';
+                
+                doc.setFontSize(11);
+                doc.setTextColor(0);
+                doc.text(`${checked} ${item.title} (${item.art})`, 20, y);
+                y += 6;
+                
+                doc.setFontSize(9);
+                doc.setTextColor(80);
+                doc.text(item.desc, 25, y);
+                y += 12;
+                
+                if (y > 270) {
+                    doc.addPage();
+                    y = 20;
+                }
+            });
+            
+            const checkboxes = document.querySelectorAll('.checklist-checkbox');
+            const checked = document.querySelectorAll('.checklist-checkbox:checked');
+            const percent = Math.round((checked.length / checkboxes.length) * 100);
+            
+            doc.setFontSize(12);
+            doc.setTextColor(0, 8, 135);
+            doc.text(`Progression globale: ${percent}%`, 20, y + 10);
+            
+            doc.setFontSize(9);
+            doc.setTextColor(150);
+            doc.text('Document généré par Homieux Media', 20, 285);
+            
+            doc.save(`checklist-conformite-eu-ai-act-${new Date().toISOString().split('T')[0]}.pdf`);
+        }
+    </script>
+</body>
+</html>
