@@ -616,6 +616,28 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+        
+        .airtable-status {
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: none;
+        }
+        
+        .airtable-status.success {
+            display: block;
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+        
+        .airtable-status.error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
     </style>
 </head>
 <body>
@@ -623,7 +645,6 @@
         <div class="container">
             <div class="header-content">
                 <a href="https://homieuxmedia.com" target="_blank" rel="noopener">
-                    <!-- LOGO DANS LE MEME REPOSITORY -->
                     <img src="logo-homieux.png" alt="Homieux Media Logo" class="logo">
                 </a>
                 <a href="https://cal.com/homieux-media/discovery-call-gratuit-discutons-de-vos-defis" target="_blank" rel="noopener" class="discovery-btn">
@@ -880,12 +901,13 @@
                     </div>
                     
                     <div style="margin-top: 24px; text-align: center;">
-                        <button class="btn btn-secondary" onclick="submitToTracking()" style="width: auto; padding: 12px 24px; font-size: 14px;">
-                            Envoyer les résultats à l'équipe conformité
+                        <button class="btn btn-secondary" onclick="submitToAirtable()" style="width: auto; padding: 12px 24px; font-size: 14px;">
+                            💾 Sauvegarder dans Airtable
                         </button>
                         <p style="font-size: 12px; color: var(--text-light); margin-top: 8px;">
-                            Les données seront envoyées vers Google Forms et sauvegardées dans une feuille Excel
+                            Les données seront envoyées vers votre base Airtable (forfait gratuit)
                         </p>
+                        <div id="airtableStatus" class="airtable-status"></div>
                     </div>
                 </div>
             </div>
@@ -896,7 +918,6 @@
         <div class="container">
             <div class="footer-content">
                 <a href="https://homieuxmedia.com" target="_blank" rel="noopener">
-                    <!-- LOGO DANS LE MEME REPOSITORY -->
                     <img src="logo-homieux.png" alt="Homieux Media" class="footer-logo">
                 </a>
                 <div class="footer-links">
@@ -913,21 +934,20 @@
 
     <script>
         // ==========================================
-        // CONFIGURATION GOOGLE FORMS - À MODIFIER
+        // CONFIGURATION AIRTABLE - À MODIFIER
         // ==========================================
-        const GOOGLE_FORM_CONFIG = {
-            // Remplacez par l'ID de votre Google Form (voir tutoriel étape 3)
-            formId: '1FAIpQLSdhGVFA9QnbSAeE289lK9AS_DpstWeN5S8jn-Azmq8qYWc4ew',
+        const AIRTABLE_CONFIG = {
+            // Votre Personal Access Token (voir tutoriel étape 3)
+            personalAccessToken: 'patz8jl3SU1r0jVPJ.c9afa2e09297f51c0d336080cbdaafac4b5e5983df6c9ef4bbf888abe1f22183',
             
-            // Entry IDs des questions (voir tutoriel étape 4)
-            entryIds: {
-                company: 'entry.1244441122',      // ID pour "Nom de l'entreprise"
-                position: 'entry.917762188',     // ID pour "Poste"
-                timestamp: 'entry.1763668413',    // ID pour "Date et heure"
-                totalModels: 'entry.7443289',  // ID pour "Nombre de modèles"
-                highRiskCount: 'entry.50838455', // ID pour "Nombre high-risk"
-                jsonData: 'entry.2096049887'      // ID pour "Données complètes (JSON)"
-            }
+            // ID de votre Base (commence par 'app')
+            baseId: 'apphdakdKRB8f0MnH',
+            
+            // Nom de votre Table (ex: 'Inventaire', 'Soumissions', etc.)
+            tableName: 'Inventaire EU AI Act',
+            
+            // Pour le forfait gratuit : max 5 requêtes/seconde, 1000 appels/mois
+            // La limite de 1200 enregistrements/base est largement suffisante
         };
 
         // Stockage local des données
@@ -1455,49 +1475,89 @@
             doc.save(`checklist-conformite-eu-ai-act-${new Date().toISOString().split('T')[0]}.pdf`);
         }
 
-        // Soumission vers Google Forms - VERSION CORRIGÉE
-function submitToTracking() {
-    const total = models.length;
-    const highRisk = models.filter(m => m.isHighRisk).length;
-    
-    console.log('Envoi des données...'); // Debug
-    console.log('Form ID:', GOOGLE_FORM_CONFIG.formId);
-    console.log('Entry IDs:', GOOGLE_FORM_CONFIG.entryIds);
-    
-    // Construire l'URL SANS espace parasite
-    const formUrl = `https://docs.google.com/forms/d/e/${GOOGLE_FORM_CONFIG.formId}/formResponse`;
-    
-    console.log('URL complète:', formUrl); // Debug - vérifie dans la console (F12)
-    
-    // Préparer les données avec URLSearchParams (plus fiable que FormData)
-    const params = new URLSearchParams();
-    params.append(GOOGLE_FORM_CONFIG.entryIds.company, userData.company);
-    params.append(GOOGLE_FORM_CONFIG.entryIds.position, userData.position);
-    params.append(GOOGLE_FORM_CONFIG.entryIds.timestamp, new Date().toLocaleString('fr-FR'));
-    params.append(GOOGLE_FORM_CONFIG.entryIds.totalModels, total);
-    params.append(GOOGLE_FORM_CONFIG.entryIds.highRiskCount, highRisk);
-    params.append(GOOGLE_FORM_CONFIG.entryIds.jsonData, JSON.stringify({
-        user: userData,
-        models: models,
-        summary: { total, highRisk, compliant: total - highRisk }
-    }, null, 2));
-    
-    // Envoyer avec mode no-cors (obligatoire pour Google Forms)
-    fetch(formUrl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: params.toString(),
-        mode: 'no-cors'
-    }).then(() => {
-        console.log('Succès !');
-        alert('✅ Données envoyées avec succès !\n\nVérifiez votre Google Forms dans quelques secondes.');
-    }).catch((error) => {
-        console.error('Erreur:', error);
-        alert('❌ Erreur réseau. Détails dans la console (F12).');
-    });
-}
+        // Soumission vers Airtable - VERSION API OFFICIELLE
+        async function submitToAirtable() {
+            const statusEl = document.getElementById('airtableStatus');
+            statusEl.className = 'airtable-status';
+            statusEl.textContent = 'Envoi en cours...';
+            statusEl.style.display = 'block';
+            
+            // Vérifier la configuration
+            if (AIRTABLE_CONFIG.personalAccessToken.includes('XXXXXXXX')) {
+                statusEl.className = 'airtable-status error';
+                statusEl.innerHTML = '❌ Configuration incomplète.<br>Veuillez suivre le tutoriel ci-dessous pour configurer votre Personal Access Token.';
+                return;
+            }
+            
+            const total = models.length;
+            const highRisk = models.filter(m => m.isHighRisk).length;
+            
+            // Préparer les données pour Airtable
+            const records = models.map(model => ({
+                fields: {
+                    'Nom Entreprise': userData.company,
+                    'Poste': userData.position,
+                    'Date Soumission': new Date().toISOString(),
+                    'Nom Modèle': model.name,
+                    'Type Technologie': model.typeLabel,
+                    'Usage Principal': model.usageLabel,
+                    'Date Mise en Prod': model.date,
+                    'Décision Automatisée': model.automated,
+                    'Données Sensibles': model.personalData,
+                    'Profiling': model.profiling,
+                    'Fournisseur Tiers': model.thirdParty,
+                    'Classification': model.isHighRisk ? 'High-Risk' : 'Conforme',
+                    'Notes': model.notes || '',
+                    'JSON Complet': JSON.stringify({
+                        user: userData,
+                        model: model,
+                        summary: { total, highRisk, compliant: total - highRisk }
+                    })
+                }
+            }));
+            
+            try {
+                // Envoi vers Airtable API
+                // Note: Pour le forfait gratuit, on envoie un par un (max 10 par batch mais 5 req/sec)
+                for (let i = 0; i < records.length; i++) {
+                    const response = await fetch(`https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${encodeURIComponent(AIRTABLE_CONFIG.tableName)}`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${AIRTABLE_CONFIG.personalAccessToken}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ records: [records[i]] })
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error?.message || `Erreur HTTP ${response.status}`);
+                    }
+                    
+                    // Respecter la limite de 5 requêtes par seconde (attendre 200ms entre chaque)
+                    if (i < records.length - 1) {
+                        await new Promise(resolve => setTimeout(resolve, 200));
+                    }
+                }
+                
+                statusEl.className = 'airtable-status success';
+                statusEl.innerHTML = `✅ Succès !<br>${records.length} enregistrement(s) sauvegardé(s) dans Airtable.<br>Vérifiez votre base de données.`;
+                
+            } catch (error) {
+                console.error('Erreur Airtable:', error);
+                statusEl.className = 'airtable-status error';
+                
+                if (error.message.includes('INVALID_PERMISSIONS')) {
+                    statusEl.innerHTML = '❌ Erreur de permissions.<br>Vérifiez que votre Personal Access Token a les droits "data.records:write" et que la base est bien ajoutée aux ressources.';
+                } else if (error.message.includes('404')) {
+                    statusEl.innerHTML = '❌ Base ou Table introuvable.<br>Vérifiez le Base ID et le nom de la table dans la configuration.';
+                } else if (error.message.includes('429')) {
+                    statusEl.innerHTML = '⚠️ Limite de requêtes atteinte (5/sec).<br>Attendez 30 secondes et réessayez.';
+                } else {
+                    statusEl.innerHTML = `❌ Erreur : ${error.message}<br>Vérifiez la console (F12) pour plus de détails.`;
+                }
+            }
+        }
 
         // Utilitaires
         function escapeHtml(text) {
